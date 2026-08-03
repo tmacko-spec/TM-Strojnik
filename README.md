@@ -1,2 +1,2 @@
-# TM-Strojnik
+index.html
 Aplikace pro evidenci stavebních stroji 
