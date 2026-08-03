@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f2b705">
+  <title>TM-Strojník</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f5f6;color:#171717;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .app{max-width:720px;margin:auto;min-height:100vh;padding:18px 16px calc(30px + env(safe-area-inset-bottom))}
+    .hero{display:flex;gap:15px;align-items:center;background:#171717;color:#fff;padding:20px;border-radius:20px}
+    .logo{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#f2b705;color:#171717;font-size:25px;font-weight:900}
+    h1{margin:0;font-size:28px}.hero p{margin:4px 0 0;color:#ccc}
+    .card{background:#fff;border:1px solid #e2e2e2;border-radius:16px;padding:15px;margin-top:12px}
+    .menu{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid #e2e2e2;border-radius:16px;padding:16px;margin-top:12px}
+    .menu span:first-child{font-size:28px}.menu b{font-size:18px}
+    .primary,.secondary,.danger{min-height:50px;border-radius:13px;padding:11px 15px;font-weight:900}
+    .primary{width:100%;background:#f2b705;border:0;margin-top:12px}
+    .secondary{background:#171717;color:#fff;border:0}
+    .danger{background:#fff;color:#9c2424;border:1px solid #e3caca}
+    .hidden{display:none}
+    .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .top button{border:0;background:none;font-weight:800}
+    .machine-head{display:flex;gap:12px;align-items:center}
+    .badge{display:grid;place-items:center;width:50px;height:50px;border-radius:13px;background:#fff1b8;font-size:25px}
+    .machine-head h2{margin:0;font-size:19px}.muted{color:#666}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+    .info{padding:10px;border-radius:11px;background:#f4f5f6}
+    .actions{display:flex;gap:9px;margin-top:13px}.actions>*{flex:1}
+    .group{margin-top:12px}.group label{display:block;margin-bottom:6px;font-weight:800}
+    input,textarea{width:100%;min-height:49px;padding:12px;border:1px solid #ccc;border-radius:11px;background:#fff;font:inherit}
+    textarea{min-height:90px}
+    .empty{text-align:center;color:#666}
+    .footer{text-align:center;color:#888;margin-top:20px;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <section id="home">
+    <div class="hero">
+      <div class="logo">TM</div>
+      <div><h1>TM-Strojník</h1><p>Jednoduchá evidence strojů</p></div>
+    </div>
+    <button class="menu" onclick="show('machines')"><span>🚜</span><span><b>Evidence strojů</b><br><small class="muted">Seznam, motohodiny a poznámky</small></span></button>
+    <button class="primary" onclick="show('add')">＋ Přidat stroj</button>
+    <div class="footer">Jednoduchá verze v0.1</div>
+  </section>
+
+  <section id="machines" class="hidden">
+    <div class="top"><button onclick="show('home')">← Domů</button><b>Evidence strojů</b><span></span></div>
+    <button class="primary" onclick="show('add')">＋ Přidat stroj</button>
+    <div id="list"></div>
+  </section>
+
+  <section id="add" class="hidden">
+    <div class="top"><button onclick="show('machines')">← Zpět</button><b>Přidat stroj</b><span></span></div>
+    <form id="form">
+      <div class="group"><label>Značka *</label><input name="brand" required placeholder="např. Takeuchi"></div>
+      <div class="group"><label>Model *</label><input name="model" required placeholder="např. TB230"></div>
+      <div class="group"><label>Typ stroje</label><input name="type" placeholder="např. Minirypadlo"></div>
+      <div class="group"><label>Rok výroby</label><input name="year" type="number" placeholder="2018"></div>
+      <div class="group"><label>Motohodiny</label><input name="hours" type="number" placeholder="0"></div>
+      <div class="group"><label>Poznámka</label><textarea name="note" placeholder="Motor, servis, stav…"></textarea></div>
+      <button class="primary" type="submit">Uložit stroj</button>
+    </form>
+  </section>
+</div>
+
+<script>
+const KEY='tm-strojnik-simple';
+let machines=JSON.parse(localStorage.getItem(KEY)||'null')||[
+  {id:1,brand:'JCB',model:'3CX Contractor',type:'Rypadlo-nakladač',year:'2011',hours:'',note:'Motor Dieselmax'},
+  {id:2,brand:'Takeuchi',model:'TB230',type:'Minirypadlo',year:'2018',hours:'',note:''},
+  {id:3,brand:'HAMM',model:'HD 10',type:'Vibrační válec',year:'2005',hours:'',note:'Motor Deutz'}
+];
+
+function save(){localStorage.setItem(KEY,JSON.stringify(machines))}
+function show(id){
+  document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  if(id==='machines') render();
+  scrollTo(0,0);
+}
+function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+  const list=document.getElementById('list');
+  if(!machines.length){list.innerHTML='<div class="card empty">Zatím nejsou žádné stroje.</div>';return}
+  list.innerHTML=machines.map(m=>`
+    <article class="card">
+      <div class="machine-head">
+        <div class="badge">🚜</div>
+        <div><h2>${esc(m.brand)} ${esc(m.model)}</h2><div class="muted">${esc(m.type||'Stavební stroj')}</div></div>
+      </div>
+      <div class="grid">
+        <div class="info"><small class="muted">Rok</small><br><b>${esc(m.year||'—')}</b></div>
+        <div class="info"><small class="muted">Motohodiny</small><br><b>${esc(m.hours||'—')}</b></div>
+      </div>
+      ${m.note?`<p class="muted">${esc(m.note)}</p>`:''}
+      <div class="actions"><button class="danger" onclick="removeMachine('${m.id}')">Odstranit</button></div>
+    </article>`).join('');
+}
+function removeMachine(id){
+  if(confirm('Opravdu odstranit tento stroj?')){
+    machines=machines.filter(m=>String(m.id)!==String(id));save();render();
+  }
+}
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();const f=new FormData(e.target);
+  machines.unshift({id:Date.now(),brand:f.get('brand').trim(),model:f.get('model').trim(),type:f.get('type').trim(),year:f.get('year').trim(),hours:f.get('hours').trim(),note:f.get('note').trim()});
+  save();e.target.reset();show('machines');
+});
+</script>
+</body>
+</html>
