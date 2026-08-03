@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f2b705">
+  <title>TM-Strojník v2</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--yellow:#f2b705;--black:#171717;--bg:#f4f5f6;--white:#fff;--muted:#6a6a6a;--line:#dedede;--danger:#a52828}
+    body{margin:0;background:var(--bg);color:var(--black);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}
+    .app{max-width:760px;margin:auto;min-height:100vh;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+    .topbar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:90px 1fr 90px;align-items:center;min-height:62px;padding-top:env(safe-area-inset-top);background:#fffffff2;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+    .topbar h1{margin:0;text-align:center;font-size:20px}
+    .topbar button{border:0;background:none;font-weight:800}
+    .content{padding:16px}
+    .hero{display:flex;gap:15px;align-items:center;background:var(--black);color:#fff;padding:20px;border-radius:20px}
+    .logo{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:var(--yellow);color:var(--black);font-size:25px;font-weight:900}
+    .hero h2{margin:0;font-size:28px}.hero p{margin:4px 0 0;color:#ccc}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:13px 0}
+    .stat,.card,.menu{background:var(--white);border:1px solid var(--line);border-radius:16px}
+    .stat{padding:14px}.stat b{display:block;font-size:25px}.stat span{font-size:13px;color:var(--muted)}
+    .menu{width:100%;display:grid;grid-template-columns:48px 1fr 24px;align-items:center;padding:16px;margin-bottom:11px;text-align:left}
+    .menu .ico{font-size:29px}.menu b{display:block;font-size:18px}.menu small{color:var(--muted)}.menu .arr{font-size:30px;color:#777}
+    .primary,.dark,.secondary,.danger{min-height:50px;border-radius:13px;padding:11px 15px;font-weight:900}
+    .primary{width:100%;background:var(--yellow);border:0}.dark{background:var(--black);color:#fff;border:0}.secondary{background:#fff;border:1px solid #ccc}.danger{background:#fff;color:var(--danger);border:1px solid #e3caca}
+    .section-title{margin:20px 0 10px;font-size:20px}
+    .machine,.service,.inspection{padding:15px;margin-bottom:11px}
+    .head{display:flex;gap:12px;align-items:center}.badge{display:grid;place-items:center;width:50px;height:50px;border-radius:13px;background:#fff1b8;font-size:25px}
+    .head h2{margin:0;font-size:19px}.head p{margin:3px 0 0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.info{padding:10px;border-radius:11px;background:var(--bg)}.info small{display:block;color:var(--muted)}
+    .actions{display:flex;gap:9px;margin-top:13px}.actions>*{flex:1}
+    .group{margin-bottom:13px}.group label{display:block;margin-bottom:6px;font-weight:800}
+    input,textarea,select{width:100%;min-height:49px;padding:12px;border:1px solid #ccc;border-radius:11px;background:#fff}
+    textarea{min-height:95px;resize:vertical}
+    .chips{display:flex;gap:7px;overflow:auto;margin-bottom:14px}.chip{white-space:nowrap;padding:9px 13px;border-radius:99px;border:1px solid #ccc;background:#fff;font-weight:800}.chip.on{background:#171717;color:#fff}
+    .notice{padding:16px;border-radius:16px;background:#fff1b8}.empty{padding:22px;text-align:center;color:var(--muted)}
+    .muted{color:var(--muted)}.hidden{display:none!important}.footer{text-align:center;color:#888;margin-top:20px;font-size:13px}
+    .due{color:#a52828;font-weight:800}.ok{color:#26734d;font-weight:800}
+    @media(max-width:520px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const KEYS={machines:'tm-v2-machines',service:'tm-v2-service',inspections:'tm-v2-inspections'};
+const defaults=[
+  {id:'jcb',brand:'JCB',model:'3CX Contractor',type:'Rypadlo-nakladač',year:'2011',hours:'',serial:'',note:'Motor Dieselmax'},
+  {id:'takeuchi',brand:'Takeuchi',model:'TB230',type:'Minirypadlo',year:'2018',hours:'',serial:'',note:''},
+  {id:'hamm',brand:'HAMM',model:'HD 10',type:'Vibrační válec',year:'2005',hours:'',serial:'',note:'Motor Deutz'}
+];
+const state={
+  route:'home',selected:'',
+  machines:load(KEYS.machines,defaults),
+  service:load(KEYS.service,[]),
+  inspections:load(KEYS.inspections,[])
+};
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))||structuredClone(f)}catch{return structuredClone(f)}}
+function save(){localStorage.setItem(KEYS.machines,JSON.stringify(state.machines));localStorage.setItem(KEYS.service,JSON.stringify(state.service));localStorage.setItem(KEYS.inspections,JSON.stringify(state.inspections))}
+function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function go(route,id=''){state.route=route;if(id)state.selected=id;render();scrollTo(0,0)}
+function title(){return({home:'TM-Strojník',machines:'Evidence strojů',machineForm:'Stroj',service:'Servis',inspections:'Prohlídky',inspectionForm:'Nová prohlídka',export:'Záloha dat'})[state.route]||'TM-Strojník'}
+function shell(content){return `<main class=app><header class=topbar>${state.route==='home'?'<span></span>':'<button data-go=home>← Domů</button>'}<h1>${title()}</h1><span></span></header><section class=content>${content}</section></main>`}
+function menu(icon,title,sub,route){return `<button class=menu data-go=${route}><span class=ico>${icon}</span><span><b>${title}</b><small>${sub}</small></span><span class=arr>›</span></button>`}
+function home(){
+  const due=state.inspections.filter(x=>x.date && new Date(x.date)<=new Date(Date.now()+30*86400000)).length;
+  return `<div class=hero><div class=logo>TM</div><div><h2>TM-Strojník</h2><p>Evidence strojů, servisu a prohlídek</p></div></div>
+  <div class=stats><div class=stat><b>${state.machines.length}</b><span>Stroje</span></div><div class=stat><b>${state.service.length}</b><span>Servisní záznamy</span></div><div class=stat><b>${due}</b><span>Blízké termíny</span></div></div>
+  ${menu('🚜','Evidence strojů','Údaje, rok, motohodiny','machines')}
+  ${menu('🔧','Servisní kniha','Opravy a údržba','service')}
+  ${menu('📅','Prohlídky','STK, revize a termíny','inspections')}
+  ${menu('💾','Záloha dat','Export a obnovení','export')}
+  <button class=primary data-new-machine>＋ Přidat stroj</button>
+  <div class=footer>TM-Strojník v2.0</div>`;
+}
+function machineCard(m){return `<article class="card machine"><div class=head><div class=badge>🚜</div><div><h2>${esc(m.brand)} ${esc(m.model)}</h2><p>${esc(m.type||'Stavební stroj')}</p></div></div>
+<div class=grid><div class=info><small>Rok</small><b>${esc(m.year||'—')}</b></div><div class=info><small>Motohodiny</small><b>${esc(m.hours||'—')}</b></div></div>
+${m.serial?`<p class=muted><b>Výrobní číslo:</b> ${esc(m.serial)}</p>`:''}${m.note?`<p class=muted>${esc(m.note)}</p>`:''}
+<div class=actions><button class=dark data-service="${m.id}">Servis</button><button class=secondary data-edit="${m.id}">Upravit</button><button class=danger data-delete="${m.id}">Odstranit</button></div></article>`}
+function machines(){return `<button class=primary data-new-machine>＋ Přidat nový stroj</button><h2 class=section-title>Moje stroje</h2>${state.machines.length?state.machines.map(machineCard).join(''):'<div class="card empty">Zatím nejsou žádné stroje.</div>'}`}
+function field(n,l,p,t='text',v=''){return `<div class=group><label>${l}</label><input name=${n} type=${t} placeholder="${p}" value="${esc(v)}"></div>`}
+function machineForm(){
+  const m=state.machines.find(x=>x.id===state.selected)||{};
+  return `<form id=machineForm><input type=hidden name=id value="${esc(m.id||'')}">
+  ${field('brand','Značka *','např. Takeuchi','text',m.brand||'')}
+  ${field('model','Model *','např. TB230','text',m.model||'')}
+  ${field('type','Typ stroje','např. Minirypadlo','text',m.type||'')}
+  ${field('year','Rok výroby','2018','number',m.year||'')}
+  ${field('hours','Motohodiny','0','number',m.hours||'')}
+  ${field('serial','Výrobní číslo / VIN','volitelné','text',m.serial||'')}
+  <div class=group><label>Poznámka</label><textarea name=note placeholder="Motor, výbava, stav…">${esc(m.note||'')}</textarea></div>
+  <button class=primary>Uložit změny</button></form>`;
+}
+function service(){
+  const selected=state.machines.find(x=>x.id===state.selected);
+  const visible=selected?state.service.filter(x=>x.machineId===selected.id):state.service;
+  return `<h2 class=section-title>Vyber stroj</h2><div class=chips>${state.machines.map(m=>`<button class="chip ${selected?.id===m.id?'on':''}" data-select="${m.id}">${esc(m.brand)} ${esc(m.model)}</button>`).join('')}</div>
+  <form id=serviceForm><div class=group><label>Datum</label><input name=date type=date value="${new Date().toISOString().slice(0,10)}"></div>
+  <div class=group><label>Motohodiny při servisu</label><input name=hours type=number placeholder="volitelné"></div>
+  <div class=group><label>Popis servisního zásahu</label><textarea name=description required placeholder="např. výměna oleje a filtrů"></textarea></div>
+  <button class=primary>Přidat servisní záznam</button></form>
+  <h2 class=section-title>Historie servisu</h2>${visible.length?visible.map(s=>{const m=state.machines.find(x=>x.id===s.machineId);return `<article class="card service"><small>${esc(s.date)}</small><h3>${m?esc(m.brand+' '+m.model):'Neznámý stroj'}</h3>${s.hours?`<p><b>Motohodiny:</b> ${esc(s.hours)}</p>`:''}<p>${esc(s.description)}</p></article>`}).join(''):'<div class="card empty">Žádné servisní záznamy.</div>'}`;
+}
+function inspections(){
+  return `<button class=primary data-go=inspectionForm>＋ Přidat prohlídku</button><h2 class=section-title>Termíny</h2>${state.inspections.length?state.inspections.map(i=>{const m=state.machines.find(x=>x.id===i.machineId);const near=new Date(i.date)<=new Date(Date.now()+30*86400000);return `<article class="card inspection"><small class="${near?'due':'ok'}">${near?'Blízký termín':'Naplánováno'} · ${esc(i.date)}</small><h3>${m?esc(m.brand+' '+m.model):'Neznámý stroj'}</h3><p><b>${esc(i.type)}</b></p>${i.note?`<p>${esc(i.note)}</p>`:''}<button class=danger data-delete-inspection="${i.id}">Odstranit</button></article>`}).join(''):'<div class="card empty">Žádné prohlídky.</div>'}`;
+}
+function inspectionForm(){
+  return `<form id=inspectionForm><div class=group><label>Stroj</label><select name=machineId required><option value="">Vyber stroj</option>${state.machines.map(m=>`<option value="${m.id}">${esc(m.brand)} ${esc(m.model)}</option>`).join('')}</select></div>
+  ${field('type','Typ prohlídky','např. STK, revize, výměna oleje')}
+  <div class=group><label>Datum</label><input name=date type=date required></div>
+  <div class=group><label>Poznámka</label><textarea name=note placeholder="Co je potřeba udělat…"></textarea></div>
+  <button class=primary>Uložit prohlídku</button></form>`;
+}
+function exportView(){
+  return `<div class=notice><h3>💾 Záloha dat</h3><p>Export stáhne všechna data do souboru. Ten lze později znovu načíst.</p></div>
+  <button class=primary id=exportBtn style="margin-top:12px">Stáhnout zálohu</button>
+  <div class=group style="margin-top:16px"><label>Obnovit ze zálohy</label><input id=importFile type=file accept=".json,application/json"></div>
+  <button class=danger id=clearBtn>Vymazat všechna data</button>`;
+}
+function bind(){
+  document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>go(x.dataset.go));
+  document.querySelectorAll('[data-new-machine]').forEach(x=>x.onclick=()=>{state.selected='';go('machineForm')});
+  document.querySelectorAll('[data-edit]').forEach(x=>x.onclick=()=>go('machineForm',x.dataset.edit));
+  document.querySelectorAll('[data-service]').forEach(x=>x.onclick=()=>go('service',x.dataset.service));
+  document.querySelectorAll('[data-select]').forEach(x=>x.onclick=()=>{state.selected=x.dataset.select;render()});
+  document.querySelectorAll('[data-delete]').forEach(x=>x.onclick=()=>{if(confirm('Odstranit stroj a jeho servisní záznamy?')){const id=x.dataset.delete;state.machines=state.machines.filter(m=>m.id!==id);state.service=state.service.filter(s=>s.machineId!==id);state.inspections=state.inspections.filter(i=>i.machineId!==id);save();render()}});
+  document.querySelectorAll('[data-delete-inspection]').forEach(x=>x.onclick=()=>{state.inspections=state.inspections.filter(i=>i.id!==x.dataset.deleteInspection);save();render()});
+  document.querySelector('#machineForm')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);if(!f.get('brand').trim()||!f.get('model').trim())return alert('Vyplň značku a model.');const obj={id:f.get('id')||crypto.randomUUID(),brand:f.get('brand').trim(),model:f.get('model').trim(),type:f.get('type').trim(),year:f.get('year').trim(),hours:f.get('hours').trim(),serial:f.get('serial').trim(),note:f.get('note').trim()};state.machines=f.get('id')?state.machines.map(m=>m.id===obj.id?obj:m):[obj,...state.machines];save();go('machines')});
+  document.querySelector('#serviceForm')?.addEventListener('submit',e=>{e.preventDefault();if(!state.selected)return alert('Nejdříve vyber stroj.');const f=new FormData(e.target);state.service.unshift({id:crypto.randomUUID(),machineId:state.selected,date:f.get('date'),hours:f.get('hours'),description:f.get('description').trim()});const m=state.machines.find(x=>x.id===state.selected);if(m&&f.get('hours'))m.hours=f.get('hours');save();render()});
+  document.querySelector('#inspectionForm')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);state.inspections.unshift({id:crypto.randomUUID(),machineId:f.get('machineId'),type:f.get('type').trim(),date:f.get('date'),note:f.get('note').trim()});save();go('inspections')});
+  document.querySelector('#exportBtn')?.addEventListener('click',()=>{const blob=new Blob([JSON.stringify({version:2,machines:state.machines,service:state.service,inspections:state.inspections},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tm-strojnik-zaloha.json';a.click();URL.revokeObjectURL(a.href)});
+  document.querySelector('#importFile')?.addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state.machines=d.machines||[];state.service=d.service||[];state.inspections=d.inspections||[];save();alert('Záloha byla obnovena.');go('home')}catch{alert('Soubor zálohy není platný.')}};r.readAsText(file)});
+  document.querySelector('#clearBtn')?.addEventListener('click',()=>{if(confirm('Opravdu vymazat všechna data?')){state.machines=[];state.service=[];state.inspections=[];save();go('home')}});
+}
+function render(){const view={home,machines,machineForm,service,inspections,inspectionForm,export:exportView}[state.route]||home;document.getElementById('app').innerHTML=shell(view());bind()}
+render();
+</script>
+</body>
+</html>
