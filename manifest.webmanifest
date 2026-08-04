@@ -1,0 +1,19 @@
+{
+  "name": "TM-Strojník",
+  "short_name": "TM-Strojník",
+  "description": "Evidence stavebních strojů, servisní kniha a provozní deník.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f6",
+  "theme_color": "#151515",
+  "lang": "cs",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
