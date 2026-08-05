@@ -1,24 +1,13 @@
-# TM-Strojník v0.4
+# TM-Strojník v2.1
 
-Nahraj do kořene GitHub repozitáře tyto soubory:
+Nová karta techniky s časovou osou:
 
-- `index.html`
-- `styles.css`
-- `app.js`
-- `logo.png`
-- `manifest.webmanifest`
-- `sw.js`
+- souhrnný stav, aktuální MTH/km, servis, poslední tankování a poslední směna
+- rychlá tlačítka Začít směnu, Tankování, Servis a Závada
+- rychlé odkazy na provozní deník, prohlídky, filtry a nastavení
+- jedna chronologická časová osa směn, tankování, servisu, prohlídek, údržby a závad
+- rychlý formulář pro nahlášení závady
+- nahlášená závada se okamžitě propíše do stavu stroje, upozornění a časové osy
 
-GitHub Pages bude dál používat `index.html`.
-
-## Co je v této verzi
-
-- dlaždicová domovská obrazovka pro iPhone a iPad
-- evidence a úprava strojů
-- servisní kniha
-- provozní deník
-- tisk provozního deníku / uložení do PDF
-- prohlídky a termíny
-- záloha a obnovení dat
-- instalace na plochu jako webová aplikace
-- základní offline režim
+Nahraj:
+index.html, styles.css, app.js, logo.png, manifest.webmanifest, sw.js.
