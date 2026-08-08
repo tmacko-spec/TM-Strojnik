@@ -1,13 +1,35 @@
-# TM-Strojník v2.1
+# TM-Strojník 4.0
 
-Nová karta techniky s časovou osou:
+Stabilní jednosložková verze pro Codespaces, iPhone a iPad.
 
-- souhrnný stav, aktuální MTH/km, servis, poslední tankování a poslední směna
-- rychlá tlačítka Začít směnu, Tankování, Servis a Závada
-- rychlé odkazy na provozní deník, prohlídky, filtry a nastavení
-- jedna chronologická časová osa směn, tankování, servisu, prohlídek, údržby a závad
-- rychlý formulář pro nahlášení závady
-- nahlášená závada se okamžitě propíše do stavu stroje, upozornění a časové osy
+## Novinky
 
-Nahraj:
-index.html, styles.css, app.js, logo.png, manifest.webmanifest, sw.js.
+- konzistentní označení verze 4.0
+- ochrana proti prázdné bílé stránce pomocí Error Boundary
+- bezpečný převod místních dat ze starších verzí
+- instalovatelná PWA aplikace
+- ikona TM pro plochu
+- offline aplikační obálka
+- servisní plánovač, karty strojů, směny, tankování, servis, závady, OCR a zálohy
+- připravené Firebase Hosting
+
+## Spuštění v Codespaces
+
+Příkazy zadávej samostatně:
+
+```bash
+npm install
+npm run dev
+```
+
+Pak otevři port 5173. Vývojový server musí zůstat spuštěný.
+
+## Ověření projektu
+
+```bash
+npm run build
+```
+
+## Instalace na iPhone nebo iPad
+
+V Safari otevři aplikaci, klepni na Sdílet a zvol Přidat na plochu.
