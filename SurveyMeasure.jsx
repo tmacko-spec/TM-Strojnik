@@ -63,6 +63,14 @@ export default function SurveyMeasure() {
   const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-a')) } catch { return null } })
   const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
   const [restorePoint, setRestorePoint] = useState(null)
+  const [pointName, setPointName] = useState('')
+  const [customPoints, setCustomPoints] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('tm-survey-custom-points')) || []
+    } catch {
+      return []
+    }
+  })
   const [deviceHeading, setDeviceHeading] = useState(null)
   const [compassEnabled, setCompassEnabled] = useState(false)
 
@@ -177,6 +185,24 @@ export default function SurveyMeasure() {
 
     setPointB(point)
     localStorage.setItem('tm-survey-point-b', JSON.stringify(point))
+  }
+
+  function saveCustomPoint() {
+    if (!position) return
+
+    const name = pointName.trim() || `Bod ${customPoints.length + 1}`
+
+    const newPoint = {
+      id: Date.now(),
+      name,
+      ...position,
+      savedAt: Date.now()
+    }
+
+    const next = [...customPoints, newPoint]
+    setCustomPoints(next)
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
+    setPointName('')
   }
 
   return (
@@ -356,6 +382,70 @@ export default function SurveyMeasure() {
 
       <section className="survey-hero" style={{ marginTop: 18 }}>
         <h2>Uložené body</h2>
+
+      <div style={{ marginBottom: 18 }}>
+        <input
+          value={pointName}
+          onChange={(e) => setPointName(e.target.value)}
+          placeholder="Název bodu, např. Roh 1"
+          style={{
+            width: '100%',
+            boxSizing: 'border-box',
+            padding: 14,
+            borderRadius: 12,
+            border: '1px solid #ccc',
+            fontSize: 16
+          }}
+        />
+
+        <button
+          onClick={saveCustomPoint}
+          disabled={!position}
+          style={{
+            width: '100%',
+            marginTop: 10,
+            padding: 14,
+            borderRadius: 12,
+            fontWeight: 700
+          }}
+        >
+          Uložit nový bod
+        </button>
+      </div>
+
+      {customPoints.length > 0 && (
+        <div style={{ display: 'grid', gap: 10, marginBottom: 18 }}>
+          {customPoints.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                padding: 14,
+                borderRadius: 14,
+                background: '#eef8f0'
+              }}
+            >
+              <strong>{p.name}</strong>
+
+              <div style={{ marginTop: 5 }}>
+                {formatCoord(p.latitude)}, {formatCoord(p.longitude)}
+              </div>
+
+              <button
+                onClick={() => setRestorePoint(p)}
+                style={{
+                  width: '100%',
+                  marginTop: 10,
+                  padding: 11,
+                  fontWeight: 700
+                }}
+              >
+                Navigovat na bod
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
 
         <div style={{ display: 'grid', gap: 12, marginTop: 14 }}>
           <div
