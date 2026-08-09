@@ -435,6 +435,33 @@ export default function SurveyMeasure() {
           Vzdálenost k uloženému bodu
         </div>
 
+        {restoreDistance !== null && position?.accuracy != null && (
+          <div
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 12,
+              fontWeight: 700,
+              background:
+                Number(position.accuracy) > 3
+                  ? '#ffe8e8'
+                  : restoreDistance <= 0.5
+                    ? '#dff5e3'
+                    : restoreDistance <= 2
+                      ? '#fff1c7'
+                      : '#eef3f7'
+            }}
+          >
+            {Number(position.accuracy) > 3
+              ? `GPS je příliš nepřesná pro přesné určení bodu (±${Number(position.accuracy).toFixed(1)} m)`
+              : restoreDistance <= 0.5
+                ? 'BOD NALEZEN'
+                : restoreDistance <= 2
+                  ? 'Blízko bodu'
+                  : 'Pokračuj podle šipky'}
+          </div>
+        )}
+
         {restoreBearing !== null && (
           <div style={{ marginTop: 18, textAlign: 'center' }}>
             <div
