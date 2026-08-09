@@ -13,6 +13,7 @@ import { OcrMeter, OcrReceipt } from './OCR'
 import Survey from './Survey'
 import SurveyStart from './SurveyStart'
 import SurveyMeasure from './SurveyMeasure'
+import SurveyProjects from './SurveyProjects'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/ocr/receipt" element={<OcrReceipt />} />
           <Route path="/planner" element={<Planner />} />
           <Route path="/survey" element={<Survey />} />
+          <Route path="/survey/projects" element={<SurveyProjects />} />
           <Route path="/survey/new" element={<SurveyStart />} />
           <Route path="/survey/measure" element={<SurveyMeasure />} />
           <Route path="/settings" element={<Settings />} />
