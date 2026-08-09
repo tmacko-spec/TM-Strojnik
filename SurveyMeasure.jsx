@@ -205,6 +205,41 @@ export default function SurveyMeasure() {
     setPointName('')
   }
 
+  function renameCustomPoint(id) {
+    const current = customPoints.find((p) => p.id === id)
+    if (!current) return
+
+    const newName = window.prompt('Nový název bodu:', current.name)
+    if (newName == null) return
+
+    const trimmed = newName.trim()
+    if (!trimmed) return
+
+    const next = customPoints.map((p) =>
+      p.id === id ? { ...p, name: trimmed } : p
+    )
+
+    setCustomPoints(next)
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
+  }
+
+  function deleteCustomPoint(id) {
+    const current = customPoints.find((p) => p.id === id)
+    if (!current) return
+
+    const ok = window.confirm(`Opravdu smazat bod "${current.name}"?`)
+    if (!ok) return
+
+    const next = customPoints.filter((p) => p.id !== id)
+
+    setCustomPoints(next)
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
+
+    if (restorePoint?.id === id) {
+      setRestorePoint(null)
+    }
+  }
+
   return (
     <div className="survey-page">
       <header className="survey-header">
@@ -441,6 +476,35 @@ export default function SurveyMeasure() {
               >
                 Navigovat na bod
               </button>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 8,
+                  marginTop: 8
+                }}
+              >
+                <button
+                  onClick={() => renameCustomPoint(p.id)}
+                  style={{
+                    padding: 10,
+                    fontWeight: 700
+                  }}
+                >
+                  Přejmenovat
+                </button>
+
+                <button
+                  onClick={() => deleteCustomPoint(p.id)}
+                  style={{
+                    padding: 10,
+                    fontWeight: 700
+                  }}
+                >
+                  Smazat
+                </button>
+              </div>
             </div>
           ))}
         </div>
