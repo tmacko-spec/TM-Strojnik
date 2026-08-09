@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import Layout from './Layout'
 import Dashboard from './Dashboard'
 import MachineForm from './MachineForm'
@@ -16,7 +16,7 @@ import SurveyMeasure from './SurveyMeasure'
 
 export default function App() {
   return (
-    <BrowserRouter basename="/TM-Strojnik">
+    <HashRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
@@ -37,6 +37,6 @@ export default function App() {
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
