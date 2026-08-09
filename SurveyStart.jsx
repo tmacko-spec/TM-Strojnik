@@ -4,6 +4,13 @@ import './Survey.css'
 
 export default function SurveyStart() {
   const navigate = useNavigate()
+  const activeProject = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("tm-survey-active-project") || "null")
+    } catch {
+      return null
+    }
+  })()
   const [length, setLength] = useState('40')
   const [width, setWidth] = useState('20')
 
@@ -17,6 +24,20 @@ export default function SurveyStart() {
   }, [length, width])
 
   return (
+    <>
+      <div style={{ padding: "16px 20px 0", maxWidth: 900, margin: "0 auto" }}>
+        <button
+          onClick={() => navigate("/survey/projects")}
+          style={{ padding: "10px 14px", marginBottom: 12 }}
+        >
+          ← Projekty hřišť
+        </button>
+        {activeProject && (
+          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
+            Projekt: {activeProject.name}
+          </div>
+        )}
+      </div>
     <div className="survey-page">
       <header className="survey-header">
         <div>
@@ -123,5 +144,6 @@ export default function SurveyStart() {
         </button>
       </div>
     </div>
+    </>
   )
 }
