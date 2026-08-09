@@ -49,6 +49,11 @@ export default function SurveyMeasure() {
   const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
   const [restorePoint, setRestorePoint] = useState(null)
 
+  const restoreDistance = useMemo(
+    () => position && restorePoint ? distanceMeters(position, restorePoint) : null,
+    [position, restorePoint]
+  )
+
   const distanceAB = useMemo(
     () => distanceMeters(pointA, pointB),
     [pointA, pointB]
@@ -344,6 +349,53 @@ export default function SurveyMeasure() {
         Obnovit bod B
       </button>
     </div>
+
+    {restorePoint && (
+      <div
+        style={{
+          margin: '0 0 16px',
+          padding: 18,
+          borderRadius: 16,
+          background: '#fff7d6'
+        }}
+      >
+        <strong style={{ fontSize: 18 }}>Obnova uloženého bodu</strong>
+
+        <div
+          style={{
+            marginTop: 10,
+            fontSize: 36,
+            fontWeight: 800
+          }}
+        >
+          {restoreDistance !== null
+            ? `${restoreDistance.toFixed(2)} m`
+            : 'Čekám na GPS…'}
+        </div>
+
+        <div style={{ marginTop: 6 }}>
+          Vzdálenost k uloženému bodu
+        </div>
+
+        {position?.accuracy != null && (
+          <div style={{ marginTop: 8, fontSize: 14 }}>
+            Přesnost GPS: ±{Number(position.accuracy).toFixed(1)} m
+          </div>
+        )}
+
+        <button
+          onClick={() => setRestorePoint(null)}
+          style={{
+            marginTop: 14,
+            width: '100%',
+            padding: 12,
+            fontWeight: 700
+          }}
+        >
+          Ukončit obnovu bodu
+        </button>
+      </div>
+    )}
 
     <div className="survey-info">
         <strong>Testovací GPS režim</strong>
