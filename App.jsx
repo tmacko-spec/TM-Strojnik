@@ -16,7 +16,7 @@ import SurveyMeasure from './SurveyMeasure'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/TM-Strojnik">
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
