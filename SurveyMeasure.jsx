@@ -47,6 +47,7 @@ export default function SurveyMeasure() {
   const [gpsError, setGpsError] = useState('')
   const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-a')) } catch { return null } })
   const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
+  const [restorePoint, setRestorePoint] = useState(null)
 
   const distanceAB = useMemo(
     () => distanceMeters(pointA, pointB),
@@ -326,7 +327,25 @@ export default function SurveyMeasure() {
         </div>
       </section>
 
-      <div className="survey-info">
+      <div style={{ display: 'flex', gap: 10, margin: '16px 0' }}>
+      <button
+        disabled={!pointA}
+        onClick={() => setRestorePoint(pointA)}
+        style={{ flex: 1, padding: 14, fontWeight: 700 }}
+      >
+        Obnovit bod A
+      </button>
+
+      <button
+        disabled={!pointB}
+        onClick={() => setRestorePoint(pointB)}
+        style={{ flex: 1, padding: 14, fontWeight: 700 }}
+      >
+        Obnovit bod B
+      </button>
+    </div>
+
+    <div className="survey-info">
         <strong>Testovací GPS režim</strong>
         <p>
           Body A a B se ukládají do iPhonu. Přesnost závisí na kvalitě GPS
