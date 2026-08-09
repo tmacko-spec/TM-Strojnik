@@ -205,6 +205,47 @@ export default function SurveyMeasure() {
     setPointName('')
   }
 
+  function importCustomPoints(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result)
+
+        if (!Array.isArray(data)) {
+          throw new Error("Neplatný formát")
+        }
+
+        const valid = data.filter(
+          (p) =>
+            p &&
+            typeof p.latitude === "number" &&
+            typeof p.longitude === "number"
+        )
+
+        if (!valid.length) {
+          throw new Error("Soubor neobsahuje žádné platné body")
+        }
+
+        setCustomPoints(valid)
+        localStorage.setItem(
+          "tm-survey-custom-points",
+          JSON.stringify(valid)
+        )
+
+        window.alert(`Importováno bodů: ${valid.length}`)
+      } catch (err) {
+        window.alert("Soubor se nepodařilo importovat.")
+      }
+
+      event.target.value = ""
+    }
+
+    reader.readAsText(file)
+  }
+
   function exportCustomPoints() {
     if (!customPoints.length) return
     const data = JSON.stringify(customPoints, null, 2)
@@ -459,6 +500,28 @@ export default function SurveyMeasure() {
           Uložit nový bod
         </button>
       </div>
+
+      <label
+        style={{
+          display: "block",
+          width: "100%",
+          padding: 12,
+          marginBottom: 14,
+          boxSizing: "border-box",
+          textAlign: "center",
+          fontWeight: 700,
+          background: "#e5e5e5",
+          borderRadius: 8
+        }}
+      >
+        Importovat body
+        <input
+          type="file"
+          accept=".json,application/json"
+          onChange={importCustomPoints}
+          style={{ display: "none" }}
+        />
+      </label>
 
       {customPoints.length > 0 && (
         <button
