@@ -10,6 +10,9 @@ import Settings from './Settings'
 import Planner from './Planner'
 import { FuelForm, ServiceForm, FaultForm } from './SimpleEntry'
 import { OcrMeter, OcrReceipt } from './OCR'
+import Survey from './Survey'
+import SurveyStart from './SurveyStart'
+import SurveyMeasure from './SurveyMeasure'
 
 export default function App() {
   return (
@@ -28,6 +31,9 @@ export default function App() {
           <Route path="/ocr/meter" element={<OcrMeter />} />
           <Route path="/ocr/receipt" element={<OcrReceipt />} />
           <Route path="/planner" element={<Planner />} />
+          <Route path="/survey" element={<Survey />} />
+          <Route path="/survey/new" element={<SurveyStart />} />
+          <Route path="/survey/measure" element={<SurveyMeasure />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>

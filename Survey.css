@@ -1,0 +1,242 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #111827;
+  background: #f4f7f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.survey-page {
+  min-height: 100vh;
+  padding: 22px 18px 40px;
+  background:
+    linear-gradient(180deg, #eef8f0 0%, #f7f8f7 38%, #ffffff 100%);
+}
+
+.survey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 760px;
+  margin: 0 auto 20px;
+}
+
+.survey-header > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.survey-brand {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: #1f8f46;
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 8px 24px rgba(31, 143, 70, 0.24);
+}
+
+.survey-header h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+}
+
+.survey-gps {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+
+.gps-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #2eb85c;
+  box-shadow: 0 0 0 4px rgba(46,184,92,0.14);
+}
+
+.survey-hero {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 26px 22px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 12px 35px rgba(31, 45, 36, 0.10);
+}
+
+.survey-hero h2 {
+  font-size: 27px;
+  margin: 22px 0 6px;
+}
+
+.survey-hero p {
+  margin: 0;
+  color: #667085;
+  line-height: 1.5;
+}
+
+.court {
+  position: relative;
+  height: 220px;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, #d8ecdd, #9dc8a9);
+  border: 3px solid rgba(255,255,255,0.8);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.court::before {
+  content: "";
+  position: absolute;
+  inset: 32px 38px;
+  border: 4px solid rgba(255,255,255,0.92);
+}
+
+.court::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 32px;
+  bottom: 32px;
+  width: 4px;
+  background: rgba(255,255,255,0.92);
+  transform: translateX(-50%);
+}
+
+.court-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  border: 4px solid rgba(255,255,255,0.92);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.point {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: #111827;
+  font-weight: 800;
+  z-index: 5;
+  border: 3px solid white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.18);
+}
+
+.p1 { left: 23px; top: 17px; }
+.p2 { right: 23px; top: 17px; }
+.p3 { right: 23px; bottom: 17px; }
+.p4 { left: 23px; bottom: 17px; }
+
+.survey-actions {
+  max-width: 760px;
+  margin: 18px auto 0;
+  display: grid;
+  gap: 12px;
+}
+
+.survey-button {
+  width: 100%;
+  border: 0;
+  border-radius: 20px;
+  background: white;
+  padding: 17px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  text-align: left;
+  color: #111827;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+.survey-button.primary {
+  background: #187c3a;
+  color: white;
+}
+
+.button-icon {
+  min-width: 52px;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #eef7f0;
+  font-size: 28px;
+}
+
+.primary .button-icon {
+  background: rgba(255,255,255,0.17);
+}
+
+.survey-button strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.survey-button small {
+  display: block;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.survey-button.primary small {
+  color: rgba(255,255,255,0.82);
+}
+
+.survey-info {
+  max-width: 760px;
+  margin: 18px auto 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff8df;
+  color: #594b1f;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.survey-info p {
+  margin: 5px 0 0;
+}
+
+@media (min-width: 700px) {
+  .survey-page {
+    padding-top: 36px;
+  }
+
+  .survey-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .survey-button {
+    min-height: 130px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

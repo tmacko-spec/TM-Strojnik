@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="110" fill="#171a1d"/>
+<rect x="56" y="56" width="400" height="400" rx="88" fill="#d8a000"/>
+<text x="256" y="330" font-family="Arial,Helvetica,sans-serif" font-size="205" font-weight="900" text-anchor="middle" fill="#171a1d">TM</text>
+</svg>
