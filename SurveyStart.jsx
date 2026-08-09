@@ -11,8 +11,8 @@ export default function SurveyStart() {
       return null
     }
   })()
-  const [length, setLength] = useState('40')
-  const [width, setWidth] = useState('20')
+  const [length, setLength] = useState(() => String(activeProject?.length ?? 40))
+  const [width, setWidth] = useState(() => String(activeProject?.width ?? 20))
 
   const diagonal = useMemo(() => {
     const a = Number(length)
@@ -71,7 +71,16 @@ export default function SurveyStart() {
                 type="number"
                 inputMode="decimal"
                 value={length}
-                onChange={(e) => setLength(e.target.value)}
+                onChange={(e) => {
+              const value = e.target.value
+              setLength(value)
+              if (activeProject) {
+                const updated = { ...activeProject, length: value, width }
+                localStorage.setItem("tm-survey-active-project", JSON.stringify(updated))
+                const projects = JSON.parse(localStorage.getItem("tm-survey-projects") || "[]")
+                localStorage.setItem("tm-survey-projects", JSON.stringify(projects.map((p) => p.id === updated.id ? updated : p)))
+              }
+            }}
                 style={{
                   width: '100%',
                   fontSize: 26,
@@ -93,7 +102,16 @@ export default function SurveyStart() {
                 type="number"
                 inputMode="decimal"
                 value={width}
-                onChange={(e) => setWidth(e.target.value)}
+                onChange={(e) => {
+              const value = e.target.value
+              setWidth(value)
+              if (activeProject) {
+                const updated = { ...activeProject, length, width: value }
+                localStorage.setItem("tm-survey-active-project", JSON.stringify(updated))
+                const projects = JSON.parse(localStorage.getItem("tm-survey-projects") || "[]")
+                localStorage.setItem("tm-survey-projects", JSON.stringify(projects.map((p) => p.id === updated.id ? updated : p)))
+              }
+            }}
                 style={{
                   width: '100%',
                   fontSize: 26,
