@@ -205,6 +205,18 @@ export default function SurveyMeasure() {
     setPointName('')
   }
 
+  function exportCustomPoints() {
+    if (!customPoints.length) return
+    const data = JSON.stringify(customPoints, null, 2)
+    const blob = new Blob([data], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "TM-body.json"
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   function renameCustomPoint(id) {
     const current = customPoints.find((p) => p.id === id)
     if (!current) return
@@ -447,6 +459,20 @@ export default function SurveyMeasure() {
           Uložit nový bod
         </button>
       </div>
+
+      {customPoints.length > 0 && (
+        <button
+          onClick={exportCustomPoints}
+          style={{
+            width: "100%",
+            padding: 12,
+            marginBottom: 14,
+            fontWeight: 700
+          }}
+        >
+          Exportovat body
+        </button>
+      )}
 
       {customPoints.length > 0 && (
         <div style={{ display: 'grid', gap: 10, marginBottom: 18 }}>
