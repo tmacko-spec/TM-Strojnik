@@ -63,6 +63,8 @@ export default function SurveyMeasure() {
   const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-a')) } catch { return null } })
   const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
   const [restorePoint, setRestorePoint] = useState(null)
+  const [deviceHeading, setDeviceHeading] = useState(null)
+  const [compassEnabled, setCompassEnabled] = useState(false)
 
   const restoreDistance = useMemo(
     () => position && restorePoint ? distanceMeters(position, restorePoint) : null,
@@ -74,6 +76,11 @@ export default function SurveyMeasure() {
     [position, restorePoint]
   )
 
+  const relativeBearing = useMemo(() => {
+    if (restoreBearing == null || deviceHeading == null) return restoreBearing
+    return (restoreBearing - deviceHeading + 360) % 360
+  }, [restoreBearing, deviceHeading])
+
   const distanceAB = useMemo(
     () => distanceMeters(pointA, pointB),
     [pointA, pointB]
@@ -83,6 +90,37 @@ export default function SurveyMeasure() {
     distanceAB != null && length
       ? length - distanceAB
       : null
+
+  async function enableCompass() {
+    try {
+      if (
+        typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function'
+      ) {
+        const permission = await DeviceOrientationEvent.requestPermission()
+        if (permission !== 'granted') return
+      }
+
+      const handler = (event) => {
+        let heading = null
+
+        if (typeof event.webkitCompassHeading === 'number') {
+          heading = event.webkitCompassHeading
+        } else if (typeof event.alpha === 'number') {
+          heading = (360 - event.alpha) % 360
+        }
+
+        if (heading != null) {
+          setDeviceHeading(heading)
+          setCompassEnabled(true)
+        }
+      }
+
+      window.addEventListener('deviceorientation', handler, true)
+    } catch (err) {
+      console.error('Compass error:', err)
+    }
+  }
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -403,7 +441,7 @@ export default function SurveyMeasure() {
               style={{
                 fontSize: 64,
                 lineHeight: 1,
-                transform: `rotate(${restoreBearing}deg)`,
+                transform: `rotate(${relativeBearing ?? restoreBearing}deg)`,
                 display: 'inline-block'
               }}
             >
@@ -413,6 +451,25 @@ export default function SurveyMeasure() {
             <div style={{ marginTop: 8, fontWeight: 700 }}>
               Směr k bodu: {restoreBearing.toFixed(0)}°
             </div>
+
+            {!compassEnabled && (
+              <button
+                onClick={enableCompass}
+                style={{
+                  marginTop: 12,
+                  padding: '10px 16px',
+                  fontWeight: 700
+                }}
+              >
+                Zapnout kompas
+              </button>
+            )}
+
+            {compassEnabled && deviceHeading != null && (
+              <div style={{ marginTop: 8, fontSize: 14 }}>
+                Kompas: {deviceHeading.toFixed(0)}°
+              </div>
+            )}
           </div>
         )}
 
