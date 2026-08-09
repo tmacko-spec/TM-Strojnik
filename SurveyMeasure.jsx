@@ -45,8 +45,8 @@ export default function SurveyMeasure() {
 
   const [position, setPosition] = useState(null)
   const [gpsError, setGpsError] = useState('')
-  const [pointA, setPointA] = useState(null)
-  const [pointB, setPointB] = useState(null)
+  const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-a')) } catch { return null } })
+  const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
 
   const distanceAB = useMemo(
     () => distanceMeters(pointA, pointB),
