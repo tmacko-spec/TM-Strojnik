@@ -26,6 +26,21 @@ function distanceMeters(a, b) {
   return 2 * R * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h))
 }
 
+function bearingDegrees(from, to) {
+  if (!from || !to) return null
+
+  const lat1 = from.latitude * Math.PI / 180
+  const lat2 = to.latitude * Math.PI / 180
+  const dLon = (to.longitude - from.longitude) * Math.PI / 180
+
+  const y = Math.sin(dLon) * Math.cos(lat2)
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon)
+
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360
+}
+
 function formatCoord(value) {
   if (value == null) return '—'
   return Number(value).toFixed(7)
@@ -51,6 +66,11 @@ export default function SurveyMeasure() {
 
   const restoreDistance = useMemo(
     () => position && restorePoint ? distanceMeters(position, restorePoint) : null,
+    [position, restorePoint]
+  )
+
+  const restoreBearing = useMemo(
+    () => position && restorePoint ? bearingDegrees(position, restorePoint) : null,
     [position, restorePoint]
   )
 
@@ -376,6 +396,25 @@ export default function SurveyMeasure() {
         <div style={{ marginTop: 6 }}>
           Vzdálenost k uloženému bodu
         </div>
+
+        {restoreBearing !== null && (
+          <div style={{ marginTop: 18, textAlign: 'center' }}>
+            <div
+              style={{
+                fontSize: 64,
+                lineHeight: 1,
+                transform: `rotate(${restoreBearing}deg)`,
+                display: 'inline-block'
+              }}
+            >
+              ↑
+            </div>
+
+            <div style={{ marginTop: 8, fontWeight: 700 }}>
+              Směr k bodu: {restoreBearing.toFixed(0)}°
+            </div>
+          </div>
+        )}
 
         {position?.accuracy != null && (
           <div style={{ marginTop: 8, fontSize: 14 }}>
