@@ -50,19 +50,6 @@ export default function SurveyMeasure() {
   const navigate = useNavigate()
   const query = useQuery()
 
-  const activeProject = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("tm-survey-active-project") || "null")
-    } catch {
-      return null
-    }
-  })()
-
-  const projectId = activeProject?.id ?? "default"
-  const pointAKey = `tm-survey-${projectId}-point-a`
-  const pointBKey = `tm-survey-${projectId}-point-b`
-  const customPointsKey = `tm-survey-${projectId}-custom-points`
-
   const length = Number(query.get('length') || 0)
   const width = Number(query.get('width') || 0)
 
@@ -73,13 +60,13 @@ export default function SurveyMeasure() {
 
   const [position, setPosition] = useState(null)
   const [gpsError, setGpsError] = useState('')
-  const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem(pointAKey)) } catch { return null } })
-  const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem(pointBKey)) } catch { return null } })
+  const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-a')) } catch { return null } })
+  const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem('tm-survey-point-b')) } catch { return null } })
   const [restorePoint, setRestorePoint] = useState(null)
   const [pointName, setPointName] = useState('')
   const [customPoints, setCustomPoints] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(customPointsKey)) || []
+      return JSON.parse(localStorage.getItem('tm-survey-custom-points')) || []
     } catch {
       return []
     }
@@ -185,7 +172,7 @@ export default function SurveyMeasure() {
     }
 
     setPointA(point)
-    localStorage.setItem(pointAKey, JSON.stringify(point))
+    localStorage.setItem('tm-survey-point-a', JSON.stringify(point))
   }
 
   function savePointB() {
@@ -197,7 +184,7 @@ export default function SurveyMeasure() {
     }
 
     setPointB(point)
-    localStorage.setItem(pointBKey, JSON.stringify(point))
+    localStorage.setItem('tm-survey-point-b', JSON.stringify(point))
   }
 
   function saveCustomPoint() {
@@ -214,7 +201,7 @@ export default function SurveyMeasure() {
 
     const next = [...customPoints, newPoint]
     setCustomPoints(next)
-    localStorage.setItem(customPointsKey, JSON.stringify(next))
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
     setPointName('')
   }
 
@@ -286,7 +273,7 @@ export default function SurveyMeasure() {
     )
 
     setCustomPoints(next)
-    localStorage.setItem(customPointsKey, JSON.stringify(next))
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
   }
 
   function deleteCustomPoint(id) {
@@ -299,7 +286,7 @@ export default function SurveyMeasure() {
     const next = customPoints.filter((p) => p.id !== id)
 
     setCustomPoints(next)
-    localStorage.setItem(customPointsKey, JSON.stringify(next))
+    localStorage.setItem('tm-survey-custom-points', JSON.stringify(next))
 
     if (restorePoint?.id === id) {
       setRestorePoint(null)
