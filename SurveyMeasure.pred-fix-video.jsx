@@ -157,6 +157,13 @@ export default function SurveyMeasure() {
 
       cameraStreamRef.current = stream
       setArEnabled(true)
+
+      setTimeout(() => {
+        if (videoRef.current && cameraStreamRef.current) {
+          videoRef.current.srcObject = cameraStreamRef.current
+          videoRef.current.play().catch(() => {})
+        }
+      }, 100)
     } catch (err) {
       console.error("Camera error:", err)
       setCameraError("Kameru se nepodařilo spustit. Zkontroluj oprávnění pro kameru.")
@@ -713,7 +720,7 @@ export default function SurveyMeasure() {
       </button>
     </div>
 
-    {(restorePoint || arEnabled) && (
+    {restorePoint && (
       <div
         style={{
           margin: '0 0 16px',
