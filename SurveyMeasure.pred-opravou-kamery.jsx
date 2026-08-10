@@ -156,14 +156,13 @@ export default function SurveyMeasure() {
       })
 
       cameraStreamRef.current = stream
-      setArEnabled(true)
 
-      setTimeout(() => {
-        if (videoRef.current && cameraStreamRef.current) {
-          videoRef.current.srcObject = cameraStreamRef.current
-          videoRef.current.play().catch(() => {})
-        }
-      }, 100)
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+      }
+
+      setArEnabled(true)
     } catch (err) {
       console.error("Camera error:", err)
       setCameraError("Kameru se nepodařilo spustit. Zkontroluj oprávnění pro kameru.")
