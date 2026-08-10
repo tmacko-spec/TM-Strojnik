@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import './Survey.css'
 
@@ -72,10 +72,6 @@ export default function SurveyMeasure() {
   }, [length, width])
 
   const [position, setPosition] = useState(null)
-  const [arEnabled, setArEnabled] = useState(false)
-  const [cameraError, setCameraError] = useState("")
-  const videoRef = useRef(null)
-  const cameraStreamRef = useRef(null)
   const [gpsError, setGpsError] = useState('')
   const [pointA, setPointA] = useState(() => { try { return JSON.parse(localStorage.getItem(pointAKey)) } catch { return null } })
   const [pointB, setPointB] = useState(() => { try { return JSON.parse(localStorage.getItem(pointBKey)) } catch { return null } })
@@ -146,57 +142,6 @@ export default function SurveyMeasure() {
       console.error('Compass error:', err)
     }
   }
-
-  async function startCamera() {
-    try {
-      setCameraError("")
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false
-      })
-
-      cameraStreamRef.current = stream
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        await videoRef.current.play()
-      }
-
-      setArEnabled(true)
-    } catch (err) {
-      console.error("Camera error:", err)
-      setCameraError("Kameru se nepodařilo spustit. Zkontroluj oprávnění pro kameru.")
-      setArEnabled(false)
-    }
-  }
-
-  function stopCamera() {
-    if (cameraStreamRef.current) {
-      cameraStreamRef.current.getTracks().forEach((track) => track.stop())
-      cameraStreamRef.current = null
-    }
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null
-    }
-
-    setArEnabled(false)
-  }
-
-  useEffect(() => {
-    if (arEnabled && videoRef.current && cameraStreamRef.current) {
-      videoRef.current.srcObject = cameraStreamRef.current
-      videoRef.current.play().catch(() => {})
-    }
-  }, [arEnabled])
-
-  useEffect(() => {
-    return () => {
-      if (cameraStreamRef.current) {
-        cameraStreamRef.current.getTracks().forEach((track) => track.stop())
-      }
-    }
-  }, [])
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -772,132 +717,6 @@ export default function SurveyMeasure() {
                   : 'Pokračuj podle šipky'}
           </div>
         )}
-
-        <div style={{ marginTop: 18 }}>
-          <button
-            onClick={arEnabled ? stopCamera : startCamera}
-            style={{
-              width: "100%",
-              padding: 14,
-              fontWeight: 800,
-              fontSize: 18,
-              borderRadius: 12
-            }}
-          >
-            {arEnabled ? "📷 Vypnout AR kameru" : "📷 AR kamera – najít bod"}
-          </button>
-
-          {cameraError && (
-            <div
-              style={{
-                marginTop: 10,
-                padding: 12,
-                borderRadius: 10,
-                background: "#fee2e2",
-                fontWeight: 700
-              }}
-            >
-              {cameraError}
-            </div>
-          )}
-
-          {arEnabled && (
-            <div
-              style={{
-                position: "relative",
-                marginTop: 12,
-                height: 420,
-                overflow: "hidden",
-                borderRadius: 18,
-                background: "#111"
-              }}
-            >
-              <video
-                ref={videoRef}
-                playsInline
-                muted
-                autoPlay
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover"
-                }}
-              />
-
-              <div
-                style={{
-                  position: "absolute",
-                  left:
-                    relativeBearing == null
-                      ? "50%"
-                      : `${Math.max(
-                          8,
-                          Math.min(
-                            92,
-                            50 +
-                              (((relativeBearing + 540) % 360) - 180) *
-                                (50 / 45)
-                          )
-                        )}%`,
-                  top: "45%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center",
-                  transition: "left 0.15s linear",
-                  pointerEvents: "none"
-                }}
-              >
-                <div style={{ fontSize: 72, lineHeight: 1 }}>🚩</div>
-                <div
-                  style={{
-                    background: "rgba(0,0,0,.72)",
-                    color: "white",
-                    padding: "8px 12px",
-                    borderRadius: 12,
-                    fontWeight: 800,
-                    whiteSpace: "nowrap"
-                  }}
-                >
-                  Uložený bod
-                  <br />
-                  {restoredDistance != null
-                    ? `${restoredDistance.toFixed(2)} m`
-                    : ""}
-                </div>
-              </div>
-
-              <div
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  width: 28,
-                  height: 28,
-                  transform: "translate(-50%, -50%)",
-                  border: "2px solid white",
-                  borderRadius: "50%",
-                  boxShadow: "0 0 0 1px rgba(0,0,0,.6)"
-                }}
-              />
-
-              <div
-                style={{
-                  position: "absolute",
-                  left: 12,
-                  right: 12,
-                  bottom: 12,
-                  background: "rgba(0,0,0,.65)",
-                  color: "white",
-                  padding: 10,
-                  borderRadius: 10,
-                  textAlign: "center",
-                  fontWeight: 700
-                }}
-              >
-                Otoč zařízení tak, aby byl praporek uprostřed obrazu
-              </div>
-            </div>
-          )}
-        </div>
 
         {restoreBearing !== null && (
           <div style={{ marginTop: 18, textAlign: 'center' }}>
