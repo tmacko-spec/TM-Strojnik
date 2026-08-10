@@ -957,7 +957,31 @@ export default function SurveyMeasure() {
       </div>
     )}
 
-    <div className="survey-info">
+    <div style={{ marginTop: 16, marginBottom: 16 }}>
+  <button
+    onClick={arEnabled ? stopCamera : startCamera}
+    style={{
+      width: "100%",
+      padding: 18,
+      fontSize: 18,
+      fontWeight: 800,
+      borderRadius: 14,
+      border: "none",
+      background: arEnabled ? "#6b7280" : "#198c43",
+      color: "white"
+    }}
+  >
+    {arEnabled ? "📷 Vypnout AR kameru" : "📷 Zaměřit bod přes kameru"}
+  </button>
+
+  {cameraError && (
+    <div style={{ marginTop: 10, color: "#b91c1c", fontWeight: 700 }}>
+      {cameraError}
+    </div>
+  )}
+</div>
+
+<div className="survey-info">
         <strong>Testovací GPS režim</strong>
         <p>
           Body A a B se ukládají do iPhonu. Přesnost závisí na kvalitě GPS
