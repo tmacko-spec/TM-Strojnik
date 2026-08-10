@@ -713,7 +713,7 @@ export default function SurveyMeasure() {
       </button>
     </div>
 
-    {(restorePoint || arEnabled) && (
+    {restorePoint && (
       <div
         style={{
           margin: '0 0 16px',
@@ -974,6 +974,40 @@ export default function SurveyMeasure() {
     </div>
   )}
 </div>
+
+{arEnabled && !restorePoint && (
+  <div style={{ position: "relative", margin: "16px 0", height: 420, overflow: "hidden", borderRadius: 18, background: "#111" }}>
+    <video
+      ref={videoRef}
+      playsInline
+      muted
+      autoPlay
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+    />
+    <div style={{
+      position: "absolute",
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      fontSize: 72,
+      pointerEvents: "none"
+    }}>🚩</div>
+    <div style={{
+      position: "absolute",
+      left: 12,
+      right: 12,
+      bottom: 12,
+      padding: 10,
+      borderRadius: 10,
+      background: "rgba(0,0,0,.65)",
+      color: "white",
+      textAlign: "center",
+      fontWeight: 700
+    }}>
+      Zaměř praporek na požadovaný bod
+    </div>
+  </div>
+)}
 
 <div className="survey-info">
         <strong>Testovací GPS režim</strong>
