@@ -881,7 +881,13 @@ export default function SurveyMeasure() {
               <div
                 style={{
                   position: "absolute",
-                  left: "50%",
+                  left: `${Math.max(
+                  7,
+                  Math.min(
+                    93,
+                    50 + ((((relativeBearing ?? 0) + 540) % 360) - 180) * 1.35
+                  )
+                )}%`,
                   top: "50%",
                   width: 28,
                   height: 28,
