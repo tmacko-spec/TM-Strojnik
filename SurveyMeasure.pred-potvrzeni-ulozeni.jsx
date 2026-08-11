@@ -74,7 +74,6 @@ export default function SurveyMeasure() {
   const [position, setPosition] = useState(null)
   const [arEnabled, setArEnabled] = useState(false)
   const [cameraError, setCameraError] = useState("")
-  const [cameraSavedMessage, setCameraSavedMessage] = useState("")
   const videoRef = useRef(null)
   const cameraStreamRef = useRef(null)
   const [gpsError, setGpsError] = useState('')
@@ -163,12 +162,6 @@ export default function SurveyMeasure() {
       setCameraError("Kameru se nepodařilo spustit. Zkontroluj oprávnění pro kameru.")
       setArEnabled(false)
     }
-  }
-
-  function confirmCameraSave(label, saveFn) {
-    saveFn()
-    setCameraSavedMessage(label)
-    setTimeout(() => setCameraSavedMessage(""), 1500)
   }
 
   function stopCamera() {
@@ -478,7 +471,7 @@ export default function SurveyMeasure() {
       <section className="survey-actions">
         <button
           className="survey-button primary"
-          onClick={() => confirmCameraSave("Bod A uložen", savePointA)}
+          onClick={savePointA}
           disabled={!position}
         >
           <span className="button-icon">A</span>
@@ -490,7 +483,7 @@ export default function SurveyMeasure() {
 
         <button
           className="survey-button"
-          onClick={() => confirmCameraSave("Bod B uložen", savePointB)}
+          onClick={savePointB}
           disabled={!position || !pointA}
         >
           <span className="button-icon">B</span>
@@ -556,7 +549,7 @@ export default function SurveyMeasure() {
         />
 
         <button
-          onClick={() => confirmCameraSave("Nový bod uložen", saveCustomPoint)}
+          onClick={saveCustomPoint}
           disabled={!position}
           style={{
             width: '100%',
@@ -847,9 +840,7 @@ export default function SurveyMeasure() {
                   pointerEvents: "none"
                 }}
               >
-                <div style={{ fontSize: 72, lineHeight: 1 }}>
-      {cameraSavedMessage ? "✅" : "🚩"}
-    </div>
+                <div style={{ fontSize: 72, lineHeight: 1 }}>🚩</div>
                 <div
                   style={{
                     background: "rgba(0,0,0,.72)",
@@ -1027,20 +1018,20 @@ export default function SurveyMeasure() {
         fontWeight: 800,
         marginBottom: 10
       }}>
-        {cameraSavedMessage || "Zaměř bod středem obrazu"}
+        Zaměř bod středem obrazu
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        <button onClick={() => confirmCameraSave("Bod A uložen", savePointA)} style={{padding:14,fontWeight:800}}>
+        <button onClick={savePointA} style={{padding:14,fontWeight:800}}>
           Uložit bod A
         </button>
-        <button onClick={() => confirmCameraSave("Bod B uložen", savePointB)} style={{padding:14,fontWeight:800}}>
+        <button onClick={savePointB} style={{padding:14,fontWeight:800}}>
           Uložit bod B
         </button>
       </div>
 
       <button
-        onClick={() => confirmCameraSave("Nový bod uložen", saveCustomPoint)}
+        onClick={saveCustomPoint}
         style={{width:"100%",marginTop:8,padding:14,fontWeight:800}}
       >
         📍 Uložit nový bod
