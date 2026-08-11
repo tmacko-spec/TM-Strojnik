@@ -976,73 +976,35 @@ export default function SurveyMeasure() {
 </div>
 
 {arEnabled && !restorePoint && (
-  <div style={{
-    position: "fixed",
-    inset: 0,
-    zIndex: 9999,
-    background: "#111"
-  }}>
+  <div style={{ position: "relative", margin: "16px 0", height: 420, overflow: "hidden", borderRadius: 18, background: "#111" }}>
     <video
       ref={videoRef}
       playsInline
       muted
       autoPlay
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover"
-      }}
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
     />
-
     <div style={{
       position: "absolute",
       left: "50%",
-      top: "45%",
+      top: "50%",
       transform: "translate(-50%, -50%)",
       fontSize: 72,
       pointerEvents: "none"
     }}>🚩</div>
-
     <div style={{
       position: "absolute",
       left: 12,
       right: 12,
-      bottom: 18,
-      padding: 12,
-      borderRadius: 16,
-      background: "rgba(0,0,0,.72)"
+      bottom: 12,
+      padding: 10,
+      borderRadius: 10,
+      background: "rgba(0,0,0,.65)",
+      color: "white",
+      textAlign: "center",
+      fontWeight: 700
     }}>
-      <div style={{
-        color: "white",
-        textAlign: "center",
-        fontWeight: 800,
-        marginBottom: 10
-      }}>
-        Zaměř bod středem obrazu
-      </div>
-
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        <button onClick={savePointA} style={{padding:14,fontWeight:800}}>
-          Uložit bod A
-        </button>
-        <button onClick={savePointB} style={{padding:14,fontWeight:800}}>
-          Uložit bod B
-        </button>
-      </div>
-
-      <button
-        onClick={saveCustomPoint}
-        style={{width:"100%",marginTop:8,padding:14,fontWeight:800}}
-      >
-        📍 Uložit nový bod
-      </button>
-
-      <button
-        onClick={stopCamera}
-        style={{width:"100%",marginTop:8,padding:14,fontWeight:800}}
-      >
-        Zavřít kameru
-      </button>
+      Zaměř praporek na požadovaný bod
     </div>
   </div>
 )}
