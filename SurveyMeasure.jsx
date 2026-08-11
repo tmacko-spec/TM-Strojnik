@@ -705,7 +705,7 @@ export default function SurveyMeasure() {
       <div style={{ display: 'flex', gap: 10, margin: '16px 0' }}>
       <button
         disabled={!pointA}
-        onClick={() => setRestorePoint(pointA)}
+        onClick={async () => { setRestorePoint(pointA); await enableCompass(); }}
         style={{ flex: 1, padding: 14, fontWeight: 700 }}
       >
         Obnovit bod A
@@ -713,7 +713,7 @@ export default function SurveyMeasure() {
 
       <button
         disabled={!pointB}
-        onClick={() => setRestorePoint(pointB)}
+        onClick={async () => { setRestorePoint(pointB); await enableCompass(); }}
         style={{ flex: 1, padding: 14, fontWeight: 700 }}
       >
         Obnovit bod B
