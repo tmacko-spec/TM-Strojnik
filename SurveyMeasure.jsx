@@ -848,7 +848,17 @@ export default function SurveyMeasure() {
                 }}
               >
                 <div style={{ fontSize: 72, lineHeight: 1 }}>
-      {cameraSavedMessage ? "✅" : "🚩"}
+      {cameraSavedMessage ? (
+        <span style={{
+          display: "inline-block",
+          width: 0,
+          height: 0,
+          borderTop: "22px solid transparent",
+          borderBottom: "22px solid transparent",
+          borderLeft: "58px solid #22c55e",
+          filter: "drop-shadow(0 2px 3px rgba(0,0,0,.45))"
+        }} />
+      ) : "🚩"}
     </div>
                 <div
                   style={{
