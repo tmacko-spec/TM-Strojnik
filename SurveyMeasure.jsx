@@ -872,7 +872,7 @@ export default function SurveyMeasure() {
                 >
                   Uložený bod
                   <br />
-                  {restoredDistance != null
+                  {position && restorePoint
                     ? `${distanceMeters(position, restorePoint).toFixed(2)} m`
                     : ""}
                 </div>
