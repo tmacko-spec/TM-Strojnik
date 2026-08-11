@@ -1020,7 +1020,7 @@ export default function SurveyMeasure() {
       transform: "translate(-50%, -50%)",
       fontSize: 72,
       pointerEvents: "none"
-    }}>🚩</div>
+    }}>{cameraSavedMessage ? "🟢" : "🚩"}</div>
 
     <div style={{
       position: "absolute",
