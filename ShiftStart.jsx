@@ -55,7 +55,28 @@ export default function ShiftStart() {
         fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${data.latitude}&lon=${data.longitude}`)
           .then(r => r.json())
           .then(result => {
-            const address = result?.display_name || ''
+            const a = result?.address || {}
+
+            const street =
+              a.road ||
+              a.pedestrian ||
+              a.residential ||
+              a.footway ||
+              a.path ||
+              ''
+
+            const houseNumber = a.house_number || ''
+
+            const city =
+              a.city ||
+              a.town ||
+              a.village ||
+              a.municipality ||
+              ''
+
+            const streetPart = [street, houseNumber].filter(Boolean).join(' ')
+            const address = [streetPart, city].filter(Boolean).join(', ')
+
             const placeInput = document.querySelector('input[name="place"]')
             if (placeInput && address) placeInput.value = address
           })
