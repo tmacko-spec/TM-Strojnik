@@ -816,6 +816,31 @@ export default function SurveyMeasure() {
                 zIndex: 9999
               }}
             >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(env(safe-area-inset-top, 0px) + 14px)",
+                  left: 14,
+                  zIndex: 10002,
+                  background: "rgba(0,0,0,.72)",
+                  color: "white",
+                  padding: "12px 16px",
+                  borderRadius: 14,
+                  fontWeight: 800,
+                  lineHeight: 1.35
+                }}
+              >
+                <div style={{ fontSize: 14, opacity: .85 }}>Uložený bod</div>
+                <div style={{ fontSize: 28 }}>
+                  {position && restorePoint
+                    ? `${distanceMeters(position, restorePoint).toFixed(2)} m`
+                    : "—"}
+                </div>
+                <div style={{ fontSize: 14, opacity: .85 }}>
+                  GPS ±{position?.accuracy != null ? Number(position.accuracy).toFixed(1) : "—"} m
+                </div>
+              </div>
+
               <button
                 onClick={stopCamera}
                 style={{
@@ -882,22 +907,7 @@ export default function SurveyMeasure() {
         }} />
       ) : "🚩"}
     </div>
-                <div
-                  style={{
-                    background: "rgba(0,0,0,.72)",
-                    color: "white",
-                    padding: "8px 12px",
-                    borderRadius: 12,
-                    fontWeight: 800,
-                    whiteSpace: "nowrap"
-                  }}
-                >
-                  Uložený bod
-                  <br />
-                  {position && restorePoint
-                    ? `${distanceMeters(position, restorePoint).toFixed(2)} m`
-                    : ""}
-                </div>
+                
               </div>
 
               <div
