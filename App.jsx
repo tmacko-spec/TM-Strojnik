@@ -6,6 +6,7 @@ import MachineForm from './MachineForm'
 import MachineDetail from './MachineDetail'
 import ShiftStart from './ShiftStart'
 import Shifts from './Shifts'
+import Logbook from './Logbook'
 import Settings from './Settings'
 import Planner from './Planner'
 import { FuelForm, ServiceForm, FaultForm } from './SimpleEntry'
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/machine/:id/fault" element={<FaultForm />} />
           <Route path="/shift/start/:machineId" element={<ShiftStart />} />
           <Route path="/shifts" element={<Shifts />} />
+            <Route path="/machine/:id/logbook" element={<Logbook />} />
           <Route path="/ocr/meter" element={<OcrMeter />} />
           <Route path="/ocr/receipt" element={<OcrReceipt />} />
           <Route path="/planner" element={<Planner />} />

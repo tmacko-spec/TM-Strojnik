@@ -112,6 +112,7 @@ export default function MachineDetail() {
         <Link to={`/machine/${m.id}/fuel`}>⛽ Tankování</Link>
         <Link to={`/machine/${m.id}/service`}>🔧 Servis</Link>
         <Link to={`/machine/${m.id}/fault`}>⚠️ Závada</Link>
+        <Link to={`/machine/${m.id}/logbook`}>📘 Provozní deník</Link>
       </div>
 
       <nav className="detail-tabs">
