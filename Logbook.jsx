@@ -84,8 +84,7 @@ export default function Logbook() {
                   'Obsluha',
                   'Zákazník',
                   'Práce',
-                  'Zakázka',
-                  'Adresa',
+                            'Adresa',
                   'Začátek',
                   'Konec',
                   'MTH / km od',
@@ -129,7 +128,7 @@ export default function Logbook() {
                 </tr>
               )) : (
                 <tr>
-                  <td style={cell} colSpan="12">Zatím nejsou žádné směny.</td>
+                  <td style={cell} colSpan="11">Zatím nejsou žádné směny.</td>
                 </tr>
               )}
             </tbody>
