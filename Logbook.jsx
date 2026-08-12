@@ -64,7 +64,7 @@ export default function Logbook() {
       </div>
 
       <section className="card">
-        <h1 style={{ marginTop: 0 }}>TM-Strojník – Provozní deník stroje</h1>
+        <h1 style={{ marginTop: 0, fontSize: 28 }}>TM-Strojník – Provozní deník stroje</h1>
 
         <p><b>Stroj:</b> {machine.brand} {machine.model}</p>
         {machine.serial && <p><b>VIN / výrobní číslo / SPZ:</b> {machine.serial}</p>}
@@ -74,7 +74,7 @@ export default function Logbook() {
             style={{
               width: '100%',
               borderCollapse: 'collapse',
-              minWidth: 950
+              minWidth: 820
             }}
           >
             <thead>
@@ -97,9 +97,12 @@ export default function Logbook() {
                     key={x}
                     style={{
                       border: '1px solid #bbb',
-                      padding: 8,
+                      padding: '6px 5px',
                       textAlign: 'left',
-                      verticalAlign: 'top'
+                      verticalAlign: 'top',
+                      fontSize: 13,
+                      lineHeight: 1.2,
+                      whiteSpace: 'normal'
                     }}
                   >
                     {x}
@@ -139,6 +142,11 @@ export default function Logbook() {
       </section>
 
       <style>{`
+        @page {
+          size: A4 landscape;
+          margin: 10mm;
+        }
+
         @media print {
           .no-print,
           header,
@@ -149,6 +157,7 @@ export default function Logbook() {
 
           body {
             background: white !important;
+            font-size: 10px !important;
           }
 
           main {
@@ -158,6 +167,17 @@ export default function Logbook() {
           .card {
             box-shadow: none !important;
             border: none !important;
+            padding: 0 !important;
+          }
+
+          table {
+            min-width: 0 !important;
+            width: 100% !important;
+            font-size: 9px !important;
+          }
+
+          th, td {
+            padding: 3px !important;
           }
         }
       `}</style>
@@ -167,6 +187,9 @@ export default function Logbook() {
 
 const cell = {
   border: '1px solid #bbb',
-  padding: 8,
-  verticalAlign: 'top'
+  padding: '6px 5px',
+  verticalAlign: 'top',
+  fontSize: 13,
+  lineHeight: 1.2,
+  wordBreak: 'normal'
 }
