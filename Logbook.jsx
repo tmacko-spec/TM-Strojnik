@@ -2,6 +2,38 @@ import { useParams } from 'react-router-dom'
 import { useApp } from './AppContext'
 import { formatDate, formatTime } from './helpers'
 
+
+function shortAddress(value) {
+  if (!value) return '—'
+
+  const parts = String(value)
+    .split(',')
+    .map(x => x.trim())
+    .filter(Boolean)
+
+  if (parts.length <= 3) return value
+
+  const useful = parts.filter(x =>
+    !/^okres\b/i.test(x) &&
+    !/kraj$/i.test(x) &&
+    !/^\d{3}\s?\d{2}$/.test(x) &&
+    !/^(Česko|Czechia|Czech Republic)$/i.test(x)
+  )
+
+  // typická stará adresa:
+  // provozovna, ulice, čtvrť..., město...
+  if (useful.length >= 3) {
+    const street = useful[1]
+    const city =
+      useful.find(x => /^Pardubice$/i.test(x)) ||
+      useful[useful.length - 1]
+
+    return [street, city].filter(Boolean).join(', ')
+  }
+
+  return useful.join(', ') || value
+}
+
 export default function Logbook() {
   const { id } = useParams()
   const { state } = useApp()
@@ -84,7 +116,7 @@ export default function Logbook() {
                   <td style={cell}>{s.customer || '—'}</td>
                   <td style={cell}>{s.work || '—'}</td>
                   <td style={cell}>{s.job || '—'}</td>
-                  <td style={cell}>{s.place || '—'}</td>
+                  <td style={cell}>{shortAddress(s.place)}</td>
                   <td style={cell}>{formatTime(s.startTime || s.startedAt)}</td>
                   <td style={cell}>{formatTime(s.endTime || s.endedAt)}</td>
                   <td style={cell}>{s.startHours || '—'}</td>
