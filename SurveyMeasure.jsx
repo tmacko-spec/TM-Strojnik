@@ -805,14 +805,36 @@ export default function SurveyMeasure() {
           {arEnabled && (
             <div
               style={{
-                position: "relative",
-                marginTop: 12,
-                height: 420,
+                position: "fixed",
+                inset: 0,
+                width: "100vw",
+                height: "100dvh",
+                margin: 0,
                 overflow: "hidden",
-                borderRadius: 18,
-                background: "#111"
+                borderRadius: 0,
+                background: "#111",
+                zIndex: 9999
               }}
             >
+              <button
+                onClick={stopCamera}
+                style={{
+                  position: "absolute",
+                  top: "calc(env(safe-area-inset-top, 0px) + 14px)",
+                  right: 14,
+                  zIndex: 10002,
+                  padding: "12px 16px",
+                  borderRadius: 14,
+                  border: "none",
+                  background: "rgba(0,0,0,.72)",
+                  color: "white",
+                  fontSize: 17,
+                  fontWeight: 800
+                }}
+              >
+                ✕ Zavřít kameru
+              </button>
+
               <video
                 ref={videoRef}
                 playsInline
