@@ -64,7 +64,7 @@ export default function Logbook() {
       </div>
 
       <section className="card">
-        <h1 style={{ marginTop: 0, fontSize: 28 }}>TM-Strojník – Provozní deník stroje</h1>
+        <h1 style={{ marginTop: 0, fontSize: 24 }}>TM-Strojník – Provozní deník stroje</h1>
 
         <p><b>Stroj:</b> {machine.brand} {machine.model}</p>
         {machine.serial && <p><b>VIN / výrobní číslo / SPZ:</b> {machine.serial}</p>}
