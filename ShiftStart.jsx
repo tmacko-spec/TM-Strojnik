@@ -11,6 +11,29 @@ export default function ShiftStart() {
   const [gps, setGps] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('')
 
+  const addNewSelectItem = (e, listKey, label) => {
+    if (e.target.value !== '__new__') return
+
+    const value = window.prompt(`Zadej ${label}:`)?.trim()
+
+    if (!value) {
+      e.target.value = ''
+      return
+    }
+
+    update(prev => {
+      const current = prev[listKey] || []
+      return {
+        ...prev,
+        [listKey]: current.includes(value) ? current : [value, ...current]
+      }
+    })
+
+    setTimeout(() => {
+      e.target.value = value
+    }, 0)
+  }
+
   const getGps = () => {
     if (!navigator.geolocation) {
       setGpsStatus('GPS není v tomto zařízení dostupná')
@@ -92,23 +115,41 @@ export default function ShiftStart() {
       <div className="notice"><b>{machine.brand} {machine.model}</b></div>
       <label>Čas začátku<input value={currentTime()} readOnly /></label>
       <label>Obsluha
-        <select name="operator" defaultValue={last?.operator || ''} required>
+        <select
+          name="operator"
+          defaultValue={last?.operator || ''}
+          required
+          onChange={e => addNewSelectItem(e, 'operators', 'novou obsluhu')}
+        >
           <option value="">Vyber obsluhu</option>
           {state.operators.map(x => <option key={x} value={x}>{x}</option>)}
+          <option value="__new__">＋ Přidat novou obsluhu…</option>
         </select>
       </label>
 
       <label>Zákazník
-        <select name="customer" defaultValue={last?.customer || ''} required>
+        <select
+          name="customer"
+          defaultValue={last?.customer || ''}
+          required
+          onChange={e => addNewSelectItem(e, 'customers', 'nového zákazníka')}
+        >
           <option value="">Vyber zákazníka</option>
           {state.customers.map(x => <option key={x} value={x}>{x}</option>)}
+          <option value="__new__">＋ Přidat nového zákazníka…</option>
         </select>
       </label>
 
       <label>Druh práce
-        <select name="work" defaultValue={last?.work || ''} required>
+        <select
+          name="work"
+          defaultValue={last?.work || ''}
+          required
+          onChange={e => addNewSelectItem(e, 'workTypes', 'nový druh práce')}
+        >
           <option value="">Vyber druh práce</option>
           {state.workTypes.map(x => <option key={x} value={x}>{x}</option>)}
+          <option value="__new__">＋ Přidat nový druh práce…</option>
         </select>
       </label>
       <label>Zakázka<input name="job" defaultValue={last?.job || ''} /></label>
