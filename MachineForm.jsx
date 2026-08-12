@@ -14,6 +14,20 @@ export default function MachineForm() {
     hours: '', serial: '', serviceInterval: '', lastServiceHours: '', note: ''
   }
 
+  const archiveMachine = () => {
+    if (!existing) return
+    if (!window.confirm(`Opravdu odebrat ${existing.category === 'vehicle' ? 'automobil' : 'stroj'}? Historie zůstane zachována.`)) return
+
+    update(prev => ({
+      ...prev,
+      machines: prev.machines.map(m =>
+        m.id === existing.id ? { ...m, archived: true } : m
+      )
+    }))
+
+    navigate('/')
+  }
+
   const save = e => {
     e.preventDefault()
     const f = new FormData(e.currentTarget)
@@ -65,6 +79,25 @@ export default function MachineForm() {
       </div>
       <label>Poznámka<textarea name="note" defaultValue={initial.note} /></label>
       <button className="primary">Uložit</button>
+
+      {existing && (
+        <button
+          type="button"
+          onClick={archiveMachine}
+          style={{
+            marginTop: 14,
+            width: "100%",
+            padding: 14,
+            borderRadius: 12,
+            border: "1px solid #b91c1c",
+            background: "#fee2e2",
+            color: "#991b1b",
+            fontWeight: 800
+          }}
+        >
+          Odebrat {existing.category === 'vehicle' ? 'automobil' : 'stroj'}
+        </button>
+      )}
     </form>
   )
 }

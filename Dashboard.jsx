@@ -14,7 +14,7 @@ export default function Dashboard() {
   const activeMachine = activeShift && state.machines.find(m => m.id === activeShift.machineId)
 
   const rows = useMemo(() => {
-    return state.machines.filter(machine => {
+    return state.machines.filter(machine => !machine.archived).filter(machine => {
       const status = machineStatus(machine, state)
       const text = `${machine.brand} ${machine.model} ${machine.type} ${machine.serial}`.toLowerCase()
       const matchesQuery = text.includes(query.toLowerCase())
