@@ -48,8 +48,15 @@ export default function Shifts() {
           return <article className="card" key={s.id}>
             <small>{s.status === 'active' ? 'Probíhá' : formatDate(s.date)}</small>
             <h3>{m?.brand} {m?.model}</h3>
-            <p>{s.operator} · {s.customer || 'Bez zákazníka'}</p>
-            <p>{formatTime(s.startTime || s.startedAt)}–{formatTime(s.endTime || s.endedAt)}</p>
+            <p><b>Obsluha:</b> {s.operator || '—'}</p>
+            <p><b>Zákazník:</b> {s.customer || 'Bez zákazníka'}</p>
+            <p><b>Druh práce:</b> {s.work || '—'}</p>
+            {s.job && <p><b>Zakázka:</b> {s.job}</p>}
+            <p><b>Adresa:</b> {s.place || '—'}</p>
+            <p><b>Začátek:</b> {formatTime(s.startTime || s.startedAt)}</p>
+            <p><b>Konec:</b> {formatTime(s.endTime || s.endedAt)}</p>
+            <p><b>Počáteční MTH / km:</b> {s.startHours || '—'}</p>
+            <p><b>Konečné MTH / km:</b> {s.endHours || '—'}</p>
           </article>
         })}
       </div>
