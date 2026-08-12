@@ -117,8 +117,7 @@ export default function Logbook() {
                   <td style={cell}>{s.operator || '—'}</td>
                   <td style={cell}>{s.customer || '—'}</td>
                   <td style={cell}>{s.work || '—'}</td>
-                  <td style={cell}>{s.job || '—'}</td>
-                  <td style={cell}>{shortAddress(s.place)}</td>
+                        <td style={cell}>{shortAddress(s.place)}</td>
                   <td style={cell}>{formatTime(s.startTime || s.startedAt)}</td>
                   <td style={cell}>{formatTime(s.endTime || s.endedAt)}</td>
                   <td style={cell}>{s.startHours || '—'}</td>
