@@ -7,7 +7,7 @@ import { formatDate, formatTime, isVehicle, machineStatus } from './helpers'
 
 export default function MachineDetail() {
   const { id } = useParams()
-  const { state } = useApp()
+  const { state, update } = useApp()
   const navigate = useNavigate()
   const [tab, setTab] = useState('overview')
   const m = state.machines.find(x => x.id === id)
