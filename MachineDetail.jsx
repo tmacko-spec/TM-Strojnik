@@ -23,6 +23,17 @@ export default function MachineDetail() {
   const activeShift = shifts.find(x => x.status === 'active')
   const openFaults = faults.filter(x => !x.closed)
 
+  const closeFault = faultId => {
+    update(prev => ({
+      ...prev,
+      faults: prev.faults.map(f =>
+        f.id === faultId
+          ? { ...f, closed: true, closedAt: new Date().toISOString() }
+          : f
+      )
+    }))
+  }
+
   const totalFuel = fuel.reduce((s, x) => s + Number(x.total || 0), 0)
   const totalService = service.reduce((s, x) => s + Number(x.cost || 0), 0)
   const totalWorked = shifts
@@ -128,7 +139,37 @@ export default function MachineDetail() {
 
       {tab === 'overview' && (
         <>
-          <section className="stats-grid detail-stats">
+          {openFaults.length > 0 && (
+          <section className="card" style={{ marginBottom: 18 }}>
+            <h3>⚠️ Otevřené závady</h3>
+
+            {openFaults.map(f => (
+              <div
+                key={f.id}
+                style={{
+                  padding: '12px 0',
+                  borderBottom: '1px solid #ddd'
+                }}
+              >
+                <p style={{ marginTop: 0 }}>
+                  <b>{f.description}</b>
+                </p>
+
+                <small>{f.date || ''}</small>
+
+                <button
+                  type="button"
+                  onClick={() => closeFault(f.id)}
+                  style={{ marginTop: 10, display: 'block' }}
+                >
+                  ✅ Závada odstraněna
+                </button>
+              </div>
+            ))}
+          </section>
+        )}
+
+        <section className="stats-grid detail-stats">
             <div><small>PHM celkem</small><b>{totalFuel.toLocaleString('cs-CZ')} Kč</b></div>
             <div><small>Servis celkem</small><b>{totalService.toLocaleString('cs-CZ')} Kč</b></div>
             <div><small>Odpracováno</small><b>{totalWorked.toFixed(1)} {vehicle ? 'km' : 'MTH'}</b></div>

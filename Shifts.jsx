@@ -19,9 +19,12 @@ export default function Shifts() {
         ...s, status: 'closed', endHours, endTime: currentTime(), endedAt: now.toISOString(),
         defect: String(f.get('defect')).trim(), maintenance: String(f.get('maintenance')).trim()
       } : s),
-      faults: String(f.get('defect')).trim() ? [{
-        id: crypto.randomUUID(), machineId: active.machineId, date: now.toISOString().slice(0, 10),
-        description: String(f.get('defect')).trim(), closed: false
+      faults: f.get('hasDefect') && String(f.get('defect')).trim() ? [{
+        id: crypto.randomUUID(),
+        machineId: active.machineId,
+        date: now.toISOString().slice(0, 10),
+        description: String(f.get('defect')).trim(),
+        closed: false
       }, ...prev.faults] : prev.faults
     }))
   }
@@ -35,7 +38,11 @@ export default function Shifts() {
           <p>{active.operator} · {active.customer}</p>
           <p>Začátek: {formatTime(active.startTime || active.startedAt)}</p>
           <label>Konečné MTH / km<input name="endHours" type="number" step="0.1" defaultValue={machine?.hours || active.startHours} required /></label>
-          <label>Zjištěná závada<textarea name="defect" /></label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <input type="checkbox" name="hasDefect" />
+          <span>Zapsat závadu</span>
+        </label>
+        <label>Zjištěná závada<textarea name="defect" placeholder="Vyplň jen pokud je závada" /></label>
           <label>Provedená údržba<textarea name="maintenance" /></label>
           <button className="danger-btn">⏹ Ukončit směnu</button>
         </form>
