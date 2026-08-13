@@ -23,12 +23,22 @@ export default function MachineDetail() {
   const activeShift = shifts.find(x => x.status === 'active')
   const openFaults = faults.filter(x => !x.closed)
 
-  const closeFault = faultId => {
+  const closeFault = fault => {
     update(prev => ({
       ...prev,
       faults: prev.faults.map(f =>
-        f.id === faultId
-          ? { ...f, closed: true, closedAt: new Date().toISOString() }
+        f === fault ||
+        (
+          f.machineId === fault.machineId &&
+          f.date === fault.date &&
+          f.description === fault.description &&
+          !f.closed
+        )
+          ? {
+              ...f,
+              closed: true,
+              closedAt: new Date().toISOString()
+            }
           : f
       )
     }))
@@ -159,7 +169,7 @@ export default function MachineDetail() {
 
                 <button
                   type="button"
-                  onClick={() => closeFault(f.id)}
+                  onClick={() => closeFault(f)}
                   style={{ marginTop: 10, display: 'block' }}
                 >
                   ✅ Závada odstraněna
