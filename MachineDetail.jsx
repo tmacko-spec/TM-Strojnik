@@ -26,21 +26,25 @@ export default function MachineDetail() {
   const closeFault = fault => {
     update(prev => ({
       ...prev,
-      faults: prev.faults.map(f =>
-        f === fault ||
-        (
+
+      // Z otevřených závad ji úplně odstraníme
+      faults: prev.faults.filter(f =>
+        !(
           f.machineId === fault.machineId &&
           f.date === fault.date &&
-          f.description === fault.description &&
-          !f.closed
+          f.description === fault.description
         )
-          ? {
-              ...f,
-              closed: true,
-              closedAt: new Date().toISOString()
-            }
-          : f
-      )
+      ),
+
+      // Záznam zůstane zachovaný v historii
+      closedFaults: [
+        {
+          ...fault,
+          closed: true,
+          closedAt: new Date().toISOString()
+        },
+        ...(Array.isArray(prev.closedFaults) ? prev.closedFaults : [])
+      ]
     }))
   }
 
@@ -79,7 +83,15 @@ export default function MachineDetail() {
       date: x.date, icon: '⚠️',
       title: x.closed ? 'Uzavřená závada' : 'Otevřená závada',
       text: x.description
-    }))
+    })),
+      ...(Array.isArray(state.closedFaults) ? state.closedFaults : [])
+        .filter(x => x.machineId === id)
+        .map(x => ({
+          date: x.closedAt || x.date,
+          icon: '✅',
+          title: 'Uzavřená závada',
+          text: x.description
+        }))
   ].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
 
   return (
