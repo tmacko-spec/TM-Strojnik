@@ -129,3 +129,22 @@ body{min-height:100vh;min-height:100dvh}
 @media(display-mode:standalone){
   .topbar.professional{padding-top:calc(14px + env(safe-area-inset-top))}
 }
+
+/* Náhled fotografie na kartě stroje / auta */
+.machine-card.pro-card .machine-photo-placeholder {
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  overflow: hidden !important;
+  align-self: start !important;
+}
+
+.machine-card.pro-card .machine-photo-placeholder .machine-card-photo {
+  width: 100% !important;
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
