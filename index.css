@@ -83,3 +83,22 @@
   object-position: center;
   display: block;
 }
+
+/* FINÁLNÍ velikost fotky na kartě */
+.machine-card.pro-card .machine-photo-placeholder {
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  overflow: hidden !important;
+  align-self: start !important;
+}
+
+.machine-card.pro-card .machine-photo-placeholder .machine-card-photo {
+  width: 100% !important;
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
