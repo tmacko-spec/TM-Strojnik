@@ -68,3 +68,18 @@
   object-fit: cover;
   display: block;
 }
+
+/* Náhled fotografie na kartě stroje */
+.machine-card .machine-photo-placeholder {
+  height: 220px;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.machine-card .machine-card-photo {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
