@@ -148,3 +148,9 @@ body{min-height:100vh;min-height:100dvh}
   object-position: center !important;
   display: block !important;
 }
+
+/* Fotografie na kartě – zobrazit celou bez ořezu */
+.machine-card.pro-card .machine-photo-placeholder .machine-card-photo {
+  object-fit: contain !important;
+  object-position: center !important;
+}
