@@ -245,6 +245,20 @@ export default function MachineDetail() {
                           <b>Provedené práce / poznámka:</b><br />
                           {e.service.note || 'Bez poznámky'}
                         </p>
+
+                        <button
+                          type="button"
+                          className="danger-btn"
+                          onClick={() => {
+                            if (!window.confirm('Opravdu smazat tento servisní záznam?')) return
+                            update(prev => ({
+                              ...prev,
+                              service: (prev.service || []).filter(x => x.id !== e.service.id)
+                            }))
+                          }}
+                        >
+                          🗑️ Smazat servis
+                        </button>
                       </div>
                     </details>
                   ) : (
