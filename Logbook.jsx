@@ -40,6 +40,29 @@ export default function Logbook() {
 
   const machine = state.machines.find(m => m.id === id)
   const shifts = state.shifts
+
+  const serviceRows = (state.service || [])
+    .filter(x => x.machineId === id)
+    .map(x => ({
+      id: `service-${x.id || x.date}`,
+      date: x.date,
+      operator: '—',
+      customer: '—',
+      work: `Servis: ${x.title || 'Servis'}`,
+      place: '—',
+      startTime: '',
+      endTime: '',
+      startHours: x.hours || '—',
+      endHours: x.hours || '—',
+      defect: '—',
+      maintenance: x.note
+        ? `${x.title || 'Servis'} – ${x.note}`
+        : (x.title || 'Servis'),
+      isService: true
+    }))
+
+  const logRows = [...shifts, ...serviceRows]
+    .sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')))
     .filter(s => s.machineId === id)
     .slice()
     .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
@@ -111,7 +134,7 @@ export default function Logbook() {
             </thead>
 
             <tbody>
-              {shifts.length ? shifts.map(s => (
+              {logRows.length ? logRows.map(s => (
                 <tr key={s.id}>
                   <td style={cell}>{formatDate(s.date)}</td>
                   <td style={cell}>{s.operator || '—'}</td>
@@ -127,7 +150,7 @@ export default function Logbook() {
                 </tr>
               )) : (
                 <tr>
-                  <td style={cell} colSpan="11">Zatím nejsou žádné směny.</td>
+                  <td style={cell} colSpan="11">Zatím nejsou žádné záznamy.</td>
                 </tr>
               )}
             </tbody>

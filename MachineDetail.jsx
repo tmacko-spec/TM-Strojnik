@@ -76,8 +76,12 @@ export default function MachineDetail() {
       text: `${x.liters || 0} l · ${Number(x.total || 0).toLocaleString('cs-CZ')} Kč · ${x.station || ''}`
     })),
     ...service.map(x => ({
-      date: x.date, icon: '🔧', title: x.title || 'Servis',
-      text: `${Number(x.cost || 0).toLocaleString('cs-CZ')} Kč · ${x.hours || '—'} ${vehicle ? 'km' : 'MTH'}`
+      date: x.date,
+      icon: '🔧',
+      title: x.title || 'Servis',
+      type: 'service',
+      service: x,
+      text: `${Number(x.cost || 0).toLocaleString('cs-CZ')} Kč · ${x.hours || '-'} ${vehicle ? 'km' : 'MTH'}`
     })),
     ...faults.map(x => ({
       date: x.date, icon: '⚠️',
@@ -221,7 +225,31 @@ export default function MachineDetail() {
           {timeline.length ? timeline.map((e, i) => (
             <article key={`${e.date}-${i}`}>
               <div className="timeline-icon">{e.icon}</div>
-              <div><small>{formatDate(e.date)}</small><h4>{e.title}</h4><p>{e.text}</p></div>
+              <div>
+                  <small>{formatDate(e.date)}</small>
+                  <h4>{e.title}</h4>
+
+                  {e.type === 'service' ? (
+                    <details>
+                      <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                        {e.text} · zobrazit detail
+                      </summary>
+
+                      <div style={{ marginTop: 10 }}>
+                        <p><b>Datum:</b> {formatDate(e.service.date)}</p>
+                        <p><b>{vehicle ? 'km' : 'MTH'}:</b> {e.service.hours || '-'}</p>
+                        <p><b>Cena:</b> {Number(e.service.cost || 0).toLocaleString('cs-CZ')} Kč</p>
+                        <p><b>Typ servisu:</b> {e.service.title || 'Servis'}</p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>
+                          <b>Provedené práce / poznámka:</b><br />
+                          {e.service.note || 'Bez poznámky'}
+                        </p>
+                      </div>
+                    </details>
+                  ) : (
+                    <p>{e.text}</p>
+                  )}
+                </div>
             </article>
           )) : <div className="empty">Zatím nejsou žádné události.</div>}
         </div>
