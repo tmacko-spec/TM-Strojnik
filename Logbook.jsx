@@ -45,6 +45,7 @@ export default function Logbook() {
     .filter(x => x.machineId === id)
     .map(x => ({
       id: `service-${x.id || x.date}`,
+      machineId: x.machineId,
       date: x.date,
       operator: '—',
       customer: '—',
