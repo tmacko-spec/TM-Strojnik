@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useApp } from './AppContext'
 import { uid } from './helpers'
-import { storage } from './firebase'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 export default function MachineForm() {
   const { id } = useParams()
@@ -13,13 +11,52 @@ export default function MachineForm() {
   const existing = state.machines.find(m => m.id === id)
   const [photoFile, setPhotoFile] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(existing?.photo || '')
-  const [photoUploading, setPhotoUploading] = useState(false)
 
   const initial = existing || {
     category: '',
     brand: '', model: '', type: '', year: '',
     hours: '', serial: '', serviceInterval: '', lastServiceHours: '', note: ''
   }
+
+  const resizePhoto = file => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      const img = new Image()
+
+      img.onload = () => {
+        const maxWidth = 1200
+        const maxHeight = 900
+
+        let width = img.width
+        let height = img.height
+
+        const ratio = Math.min(
+          maxWidth / width,
+          maxHeight / height,
+          1
+        )
+
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+
+        resolve(canvas.toDataURL('image/jpeg', 0.72))
+      }
+
+      img.onerror = reject
+      img.src = reader.result
+    }
+
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
 
   const archiveMachine = () => {
     if (!existing) return
@@ -44,18 +81,7 @@ export default function MachineForm() {
 
     try {
       if (photoFile) {
-        setPhotoUploading(true)
-
-        const safeName = photoFile.name
-          .replace(/[^a-zA-Z0-9._-]/g, '_')
-
-        const photoRef = ref(
-          storage,
-          `machines/${machineId}/${Date.now()}-${safeName}`
-        )
-
-        await uploadBytes(photoRef, photoFile)
-        photo = await getDownloadURL(photoRef)
+        photo = await resizePhoto(photoFile)
       }
 
       const machine = {
@@ -84,8 +110,6 @@ export default function MachineForm() {
     } catch (err) {
       console.error(err)
       alert('Fotografii se nepodařilo uložit. Zkus to znovu.')
-    } finally {
-      setPhotoUploading(false)
     }
   }
 
@@ -152,9 +176,7 @@ export default function MachineForm() {
       </div>
 
       <label>Poznámka<textarea name="note" defaultValue={initial.note} /></label>
-      <button className="primary" disabled={photoUploading}>
-        {photoUploading ? 'Nahrávám fotografii…' : 'Uložit'}
-      </button>
+      <button className="primary">Uložit</button>
 
       {existing && (
         <button
