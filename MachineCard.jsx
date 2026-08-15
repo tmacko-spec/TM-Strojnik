@@ -13,8 +13,18 @@ export default function MachineCard({ machine }) {
   return (
     <article className={`machine-card pro-card ${status.level}`}>
       <div className="machine-photo-placeholder">
-        <div className="photo-icon">{vehicle ? '🚐' : '🚜'}</div>
-        <span>{vehicle ? 'AUTOMOBIL' : 'STAVEBNÍ STROJ'}</span>
+        {machine.photo ? (
+          <img
+            src={machine.photo}
+            alt={`${machine.brand || ''} ${machine.model || ''}`}
+            className="machine-card-photo"
+          />
+        ) : (
+          <>
+            <div className="photo-icon">{vehicle ? '🚐' : '🚜'}</div>
+            <span>{vehicle ? 'AUTOMOBIL' : 'STAVEBNÍ STROJ'}</span>
+          </>
+        )}
         {active && <b className="active-badge">Směna probíhá</b>}
       </div>
 
