@@ -69,6 +69,8 @@ export default function MachineDetail() {
       date: x.endedAt || x.startedAt,
       icon: x.status === 'active' ? '▶️' : '⏹️',
       title: x.status === 'active' ? 'Směna probíhá' : 'Ukončená směna',
+      type: 'shift',
+      record: x,
       text: `${x.operator} · ${x.customer || x.job || 'Bez zakázky'} · ${formatTime(x.startTime || x.startedAt)}–${formatTime(x.endTime || x.endedAt)}`
     })),
     ...fuel.map(x => ({
@@ -94,6 +96,8 @@ export default function MachineDetail() {
           date: x.closedAt || x.date,
           icon: '✅',
           title: 'Uzavřená závada',
+          type: 'closedFault',
+          record: x,
           text: x.description
         }))
   ].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
@@ -258,6 +262,69 @@ export default function MachineDetail() {
                           }}
                         >
                           🗑️ Smazat servis
+                        </button>
+                      </div>
+                    </details>
+                  ) : e.type === 'shift' && e.record?.status !== 'active' ? (
+                    <details>
+                      <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                        {e.text} · zobrazit detail
+                      </summary>
+                      <div style={{ marginTop: 10 }}>
+                        <p>{e.text}</p>
+                        <button
+                          type="button"
+                          className="danger-btn"
+                          onClick={() => {
+                            if (!window.confirm('Opravdu smazat tuto ukončenou směnu?')) return
+                            const r = e.record
+                            update(prev => ({
+                              ...prev,
+                              shifts: (prev.shifts || []).filter(x =>
+                                r.id
+                                  ? x.id !== r.id
+                                  : !(
+                                      x.machineId === r.machineId &&
+                                      x.startedAt === r.startedAt &&
+                                      x.endedAt === r.endedAt &&
+                                      x.operator === r.operator
+                                    )
+                              )
+                            }))
+                          }}
+                        >
+                          🗑️ Smazat směnu
+                        </button>
+                      </div>
+                    </details>
+                  ) : e.type === 'closedFault' ? (
+                    <details>
+                      <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                        {e.text} · zobrazit detail
+                      </summary>
+                      <div style={{ marginTop: 10 }}>
+                        <p><b>Závada:</b> {e.record?.description || e.text}</p>
+                        <button
+                          type="button"
+                          className="danger-btn"
+                          onClick={() => {
+                            if (!window.confirm('Opravdu smazat tento záznam uzavřené závady?')) return
+                            const r = e.record
+                            update(prev => ({
+                              ...prev,
+                              closedFaults: (prev.closedFaults || []).filter(x =>
+                                r.id
+                                  ? x.id !== r.id
+                                  : !(
+                                      x.machineId === r.machineId &&
+                                      (x.closedAt || x.date) === (r.closedAt || r.date) &&
+                                      x.description === r.description
+                                    )
+                              )
+                            }))
+                          }}
+                        >
+                          🗑️ Smazat uzavřenou závadu
                         </button>
                       </div>
                     </details>
