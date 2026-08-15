@@ -47,7 +47,7 @@ export default function Logbook() {
       id: `service-${x.id || x.date}`,
       machineId: x.machineId,
       date: x.date,
-      operator: '—',
+      operator: x.performedBy || '—',
       customer: '—',
       work: `Servis: ${x.title || 'Servis'}`,
       place: '—',

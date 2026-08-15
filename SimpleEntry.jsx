@@ -34,11 +34,11 @@ export function ServiceForm() {
     update(prev => ({
       ...prev,
       machines: prev.machines.map(m => m.id === id ? { ...m, hours, lastServiceHours: f.get('reset') === 'on' ? hours : m.lastServiceHours } : m),
-      service: [{ id: uid(), machineId: id, date: f.get('date'), title: String(f.get('title')).trim(), hours, cost: Number(f.get('cost') || 0), note: String(f.get('note')).trim() }, ...prev.service]
+      service: [{ id: uid(), machineId: id, date: f.get('date'), title: String(f.get('title')).trim(), hours, cost: Number(f.get('cost') || 0), performedBy: String(f.get('performedBy') || '').trim(), note: String(f.get('note')).trim() }, ...prev.service]
     }))
     navigate(`/machine/${id}`)
   }
-  return <form className="card form-card" onSubmit={save}><h2>Servis – {machine?.brand} {machine?.model}</h2><label>Datum<input name="date" type="date" defaultValue={new Date().toISOString().slice(0,10)} required /></label><label>Typ servisu<input name="title" required /></label><label>MTH / km<input name="hours" type="number" step="0.1" defaultValue={machine?.hours || ''} /></label><label>Cena<input name="cost" type="number" step="0.01" /></label><label>Poznámka<textarea name="note" /></label><label className="check"><input name="reset" type="checkbox" /> Nastavit jako poslední servis</label><button className="primary">Uložit servis</button></form>
+  return <form className="card form-card" onSubmit={save}><h2>Servis – {machine?.brand} {machine?.model}</h2><label>Datum<input name="date" type="date" defaultValue={new Date().toISOString().slice(0,10)} required /></label><label>Typ servisu<input name="title" required /></label><label>MTH / km<input name="hours" type="number" step="0.1" defaultValue={machine?.hours || ''} /></label><label>Cena<input name="cost" type="number" step="0.01" /></label><label>Servis provedl<input name="performedBy" type="text" placeholder="Jméno / firma" /></label><label>Poznámka<textarea name="note" /></label><label className="check"><input name="reset" type="checkbox" /> Nastavit jako poslední servis</label><button className="primary">Uložit servis</button></form>
 }
 
 export function FaultForm() {

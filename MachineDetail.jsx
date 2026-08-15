@@ -240,6 +240,7 @@ export default function MachineDetail() {
                         <p><b>{vehicle ? 'km' : 'MTH'}:</b> {e.service.hours || '-'}</p>
                         <p><b>Cena:</b> {Number(e.service.cost || 0).toLocaleString('cs-CZ')} Kč</p>
                         <p><b>Typ servisu:</b> {e.service.title || 'Servis'}</p>
+                        <p><b>Servis provedl:</b> {e.service.performedBy || '-'}</p>
                         <p style={{ whiteSpace: 'pre-wrap' }}>
                           <b>Provedené práce / poznámka:</b><br />
                           {e.service.note || 'Bez poznámky'}
