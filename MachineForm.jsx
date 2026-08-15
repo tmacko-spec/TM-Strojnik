@@ -1,13 +1,20 @@
+import { useState } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import { useApp } from './AppContext'
 import { uid } from './helpers'
+import { storage } from './firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 export default function MachineForm() {
   const { id } = useParams()
   const { state, update } = useApp()
   const navigate = useNavigate()
   const existing = state.machines.find(m => m.id === id)
+  const [photoFile, setPhotoFile] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(existing?.photo || '')
+  const [photoUploading, setPhotoUploading] = useState(false)
+
   const initial = existing || {
     category: '',
     brand: '', model: '', type: '', year: '',
@@ -28,27 +35,58 @@ export default function MachineForm() {
     navigate('/')
   }
 
-  const save = e => {
+  const save = async e => {
     e.preventDefault()
     const f = new FormData(e.currentTarget)
-    const machine = {
-      id: existing?.id || uid(),
-      category: f.get('category'),
-      brand: String(f.get('brand')).trim(),
-      model: String(f.get('model')).trim(),
-      type: String(f.get('type')).trim(),
-      year: String(f.get('year')),
-      hours: String(f.get('hours')),
-      serial: String(f.get('serial')).trim(),
-      serviceInterval: String(f.get('serviceInterval')),
-      lastServiceHours: String(f.get('lastServiceHours')),
-      note: String(f.get('note')).trim()
+
+    const machineId = existing?.id || uid()
+    let photo = existing?.photo || ''
+
+    try {
+      if (photoFile) {
+        setPhotoUploading(true)
+
+        const safeName = photoFile.name
+          .replace(/[^a-zA-Z0-9._-]/g, '_')
+
+        const photoRef = ref(
+          storage,
+          `machines/${machineId}/${Date.now()}-${safeName}`
+        )
+
+        await uploadBytes(photoRef, photoFile)
+        photo = await getDownloadURL(photoRef)
+      }
+
+      const machine = {
+        id: machineId,
+        category: f.get('category'),
+        brand: String(f.get('brand')).trim(),
+        model: String(f.get('model')).trim(),
+        type: String(f.get('type')).trim(),
+        year: String(f.get('year')),
+        hours: String(f.get('hours')),
+        serial: String(f.get('serial')).trim(),
+        serviceInterval: String(f.get('serviceInterval')),
+        lastServiceHours: String(f.get('lastServiceHours')),
+        note: String(f.get('note')).trim(),
+        photo
+      }
+
+      update(prev => ({
+        ...prev,
+        machines: existing
+          ? prev.machines.map(m => m.id === existing.id ? machine : m)
+          : [machine, ...prev.machines]
+      }))
+
+      navigate('/')
+    } catch (err) {
+      console.error(err)
+      alert('Fotografii se nepodařilo uložit. Zkus to znovu.')
+    } finally {
+      setPhotoUploading(false)
     }
-    update(prev => ({
-      ...prev,
-      machines: existing ? prev.machines.map(m => m.id === existing.id ? machine : m) : [machine, ...prev.machines]
-    }))
-    navigate('/')
   }
 
   return (
@@ -77,8 +115,46 @@ export default function MachineForm() {
         <label>Servisní interval<input name="serviceInterval" type="number" defaultValue={initial.serviceInterval} /></label>
         <label>Poslední servis při<input name="lastServiceHours" type="number" defaultValue={initial.lastServiceHours} /></label>
       </div>
+      <div className="machine-photo-editor">
+        <label>
+          📷 Fotografie stroje / automobilu
+          <input
+            type="file"
+            accept="image/*"
+            onChange={e => {
+              const file = e.target.files?.[0]
+              if (!file) return
+              setPhotoFile(file)
+              setPhotoPreview(URL.createObjectURL(file))
+            }}
+          />
+        </label>
+
+        {photoPreview && (
+          <div className="machine-photo-preview-wrap">
+            <img
+              src={photoPreview}
+              alt="Náhled fotografie"
+              className="machine-photo-preview"
+            />
+            <button
+              type="button"
+              className="light-btn"
+              onClick={() => {
+                setPhotoFile(null)
+                setPhotoPreview('')
+              }}
+            >
+              Odebrat vybranou fotografii
+            </button>
+          </div>
+        )}
+      </div>
+
       <label>Poznámka<textarea name="note" defaultValue={initial.note} /></label>
-      <button className="primary">Uložit</button>
+      <button className="primary" disabled={photoUploading}>
+        {photoUploading ? 'Nahrávám fotografii…' : 'Uložit'}
+      </button>
 
       {existing && (
         <button
