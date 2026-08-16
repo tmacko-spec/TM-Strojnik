@@ -188,3 +188,26 @@ body{min-height:100vh;min-height:100dvh}
 .app-shell {
   padding-bottom: 90px !important;
 }
+
+/* Náhled fotografie ve formuláři */
+.machine-photo-editor {
+  margin-top: 16px;
+}
+
+.machine-photo-editor img {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: 260px;
+  object-fit: contain;
+  object-position: left center;
+  border-radius: 14px;
+  margin-top: 10px;
+  background: #eef1f3;
+}
+
+.machine-photo-editor input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+}
