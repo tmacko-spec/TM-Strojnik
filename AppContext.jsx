@@ -3,7 +3,8 @@ import {
   useContext,
   useMemo,
   useState,
-  useEffect
+  useEffect,
+  useRef
 } from 'react'
 
 import { doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore'
@@ -17,6 +18,12 @@ const CLOUD_DOCUMENT = 'shared-state'
 
 export function AppProvider({ children }) {
   const [state, setState] = useState(loadState)
+
+  const latestStateRef = useRef(state)
+
+  useEffect(() => {
+    latestStateRef.current = state
+  }, [state])
   const [cloudReady, setCloudReady] = useState(false)
 
   const cloudRef = useMemo(() => {
@@ -101,25 +108,26 @@ export function AppProvider({ children }) {
   }, [cloudRef])
 
   const update = updater => {
-    setState(prev => {
-      const next =
-        typeof updater === 'function'
-          ? updater(prev)
-          : updater
+    const prev = latestStateRef.current
+    const next =
+      typeof updater === 'function'
+        ? updater(prev)
+        : updater
 
-      saveState(next)
+    latestStateRef.current = next
+    setState(next)
+    saveState(next)
 
-      if (cloudRef && cloudReady) {
-        setDoc(cloudRef, {
-          state: next,
-          updatedAt: new Date().toISOString()
-        }).catch(error => {
-          console.error('Firestore zápis:', error)
-        })
-      }
+    if (cloudRef && cloudReady) {
+      setDoc(cloudRef, {
+        state: next,
+        updatedAt: new Date().toISOString()
+      }).catch(error => {
+        console.error('Firestore zápis:', error)
+      })
+    }
 
-      return next
-    })
+    return next
   }
 
   const value = useMemo(
