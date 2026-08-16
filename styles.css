@@ -173,3 +173,18 @@ body{min-height:100vh;min-height:100dvh}
   object-position: center !important;
   display: block !important;
 }
+
+/* Pevná spodní navigace */
+.bottom-nav.professional {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1000 !important;
+  background: #fff !important;
+}
+
+/* Rezerva, aby obsah nezajížděl pod spodní lištu */
+.app-shell {
+  padding-bottom: 90px !important;
+}
