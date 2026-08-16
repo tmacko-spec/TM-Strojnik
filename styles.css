@@ -163,3 +163,13 @@ body{min-height:100vh;min-height:100dvh}
   object-fit: contain !important;
   display: block !important;
 }
+
+/* Fotografie stroje na detailu – celá bez ořezu */
+.detail-visual .detail-machine-photo {
+  width: 100% !important;
+  height: 220px !important;
+  max-height: 220px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block !important;
+}

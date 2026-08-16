@@ -106,10 +106,16 @@ export default function MachineDetail() {
     <>
       <section className={`detail-hero-pro ${status.level}`}>
         <div className="detail-visual">
-          <div className="detail-machine-icon">{vehicle ? '🚐' : '🚜'}</div>
-          <span>{vehicle ? 'AUTOMOBIL' : 'STAVEBNÍ STROJ'}</span>
-        </div>
-        <div className="detail-copy">
+  {m.photo ? (
+    <img src={m.photo} alt="" className="detail-machine-photo" />
+  ) : (
+    <>
+      <div className="detail-machine-icon">{vehicle ? '🚙' : '🚜'}</div>
+      <span>{vehicle ? 'AUTOMOBIL' : 'STAVEBNÍ STROJ'}</span>
+    </>
+  )}
+</div>
+<div className="detail-copy">
           <div className="detail-title-line">
             <div>
               <small>{m.type || (vehicle ? 'Automobil' : 'Stavební stroj')}</small>
