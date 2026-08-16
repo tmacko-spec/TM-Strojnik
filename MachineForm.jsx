@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useApp } from './AppContext'
 import { uid } from './helpers'
-import { ref, uploadString, getDownloadURL } from 'firebase/storage'
-import { storage } from './firebase'
 
 export default function MachineForm() {
   const { id } = useParams()
@@ -83,18 +81,7 @@ export default function MachineForm() {
 
     try {
       if (photoFile) {
-        if (!storage) {
-          throw new Error('Firebase Storage není dostupný')
-        }
-
-        const resizedPhoto = await resizePhoto(photoFile)
-        const photoRef = ref(storage, `machines/${machineId}/main.jpg`)
-
-        await uploadString(photoRef, resizedPhoto, 'data_url', {
-          contentType: 'image/jpeg'
-        })
-
-        photo = await getDownloadURL(photoRef)
+        photo = await resizePhoto(photoFile)
       }
 
       const machine = {
