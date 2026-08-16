@@ -211,3 +211,19 @@ body{min-height:100vh;min-height:100dvh}
   padding: 12px;
   margin-top: 8px;
 }
+
+/* Tlačítko odebrání fotografie */
+.machine-photo-editor .light-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 10px 16px;
+  border: 1px solid #c7ccd1;
+  border-radius: 10px;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
