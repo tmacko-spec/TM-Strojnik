@@ -117,3 +117,13 @@
   align-items: center;
   justify-content: space-between;
 }
+/* Oprava velikosti hlavního loga */
+.topbar.professional .main-logo {
+  width: auto !important;
+  height: 70px !important;
+  max-width: 70% !important;
+  max-height: 70px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
