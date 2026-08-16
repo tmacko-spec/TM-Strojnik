@@ -25,8 +25,8 @@ export default function MachineForm() {
       const img = new Image()
 
       img.onload = () => {
-        const maxWidth = 1200
-        const maxHeight = 900
+        const maxWidth = 600
+        const maxHeight = 450
 
         let width = img.width
         let height = img.height
@@ -47,7 +47,7 @@ export default function MachineForm() {
         const ctx = canvas.getContext('2d')
         ctx.drawImage(img, 0, 0, width, height)
 
-        resolve(canvas.toDataURL('image/jpeg', 0.72))
+        resolve(canvas.toDataURL('image/jpeg', 0.50))
       }
 
       img.onerror = reject
