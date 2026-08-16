@@ -154,3 +154,12 @@ body{min-height:100vh;min-height:100dvh}
   object-fit: contain !important;
   object-position: center !important;
 }
+/* Hlavní logo v horní liště */
+.topbar.professional .main-logo {
+  width: auto !important;
+  height: 70px !important;
+  max-width: 70% !important;
+  max-height: 70px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
