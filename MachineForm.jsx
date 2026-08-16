@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useApp } from './AppContext'
 import { uid } from './helpers'
+import { doc, setDoc } from 'firebase/firestore'
+import { db } from './firebase'
 
 export default function MachineForm() {
   const { id } = useParams()
@@ -82,6 +84,16 @@ export default function MachineForm() {
     try {
       if (photoFile) {
         photo = await resizePhoto(photoFile)
+
+        if (db) {
+          await setDoc(
+            doc(db, 'tm-strojnik-photos', machineId),
+            {
+              photo,
+              updatedAt: new Date().toISOString()
+            }
+          )
+        }
       }
 
       const machine = {
