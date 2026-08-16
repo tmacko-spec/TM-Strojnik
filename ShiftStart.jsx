@@ -95,7 +95,7 @@ export default function ShiftStart() {
     )
   }
   const machine = state.machines.find(m => m.id === machineId)
-  const last = [...state.shifts].find(s => s.machineId === machineId)
+  const last = [...state.shifts].reverse().find(s => s.machineId === machineId)
 
   if (!machine) return <div className="empty">Technika nebyla nalezena.</div>
   if (state.shifts.some(s => s.status === 'active' && s.machineId === machineId)) return <div className="empty">Na tomto stroji už směna probíhá.</div>
