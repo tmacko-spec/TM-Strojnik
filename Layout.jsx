@@ -1,11 +1,12 @@
 
 import { NavLink, Outlet } from 'react-router-dom'
-
+import logo from './logo.png'
 export default function Layout() {
   return (
     <div className="app-shell">
       <header className="topbar professional">
-        <img src="/TM-Strojnik/logo.png" alt="Tomáš Macko" className="main-logo" />
+        <img src={logo} alt="Tomáš Macko" className="main-logo" />
+        
         
         <div className="topbar-version">v4.0</div>
       </header>
