@@ -5,11 +5,8 @@ export default function Layout() {
   return (
     <div className="app-shell">
       <header className="topbar professional">
-        <div className="brand-mark">TM</div>
-        <div className="brand-copy">
-          <h1>TM-Strojník</h1>
-          <p>Evidence stavebních strojů a automobilů</p>
-        </div>
+        <img src="./logo.png" alt="Tomáš Macko" className="main-logo" />
+        
         <div className="topbar-version">v4.0</div>
       </header>
 
