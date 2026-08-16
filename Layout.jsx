@@ -5,7 +5,7 @@ export default function Layout() {
   return (
     <div className="app-shell">
       <header className="topbar professional">
-        <img src="./logo.png" alt="Tomáš Macko" className="main-logo" />
+        <img src="/TM-Strojnik/logo.png" alt="Tomáš Macko" className="main-logo" />
         
         <div className="topbar-version">v4.0</div>
       </header>
