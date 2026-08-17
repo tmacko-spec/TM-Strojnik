@@ -2,53 +2,9 @@
 import { useRef } from 'react'
 import { useApp } from './AppContext'
 import { exportState, seed } from './storage'
-import { firebaseEnabled, db } from './firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { firebaseEnabled } from './firebase'
 
 export default function Settings() {
-  const downloadFullBackup = async () => {
-    try {
-      const photos = {}
-
-      if (firebaseEnabled && db) {
-        const snap = await getDocs(collection(db, 'tm-strojnik-photos'))
-        snap.forEach(d => {
-          photos[d.id] = d.data()
-        })
-      }
-
-      const backup = {
-        format: 'TM-Strojnik-backup-v1',
-        createdAt: new Date().toISOString(),
-        sharedState: { state },
-        photos
-      }
-
-      const blob = new Blob(
-        [JSON.stringify(backup, null, 2)],
-        { type: 'application/json' }
-      )
-
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-
-      const stamp = new Date()
-        .toISOString()
-        .replace(/[:.]/g, '-')
-
-      a.href = url
-      a.download = `TM-Strojnik-${stamp}.json`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000)
-    } catch (error) {
-      console.error(error)
-      alert('Zálohu se nepodařilo vytvořit.')
-    }
-  }
-
   const { state, update } = useApp()
   const fileRef = useRef()
 
@@ -71,7 +27,7 @@ export default function Settings() {
       <section className="card">
         <h2>Záloha dat</h2>
         <div className="settings-actions">
-          <button onClick={downloadFullBackup}>💾 Stáhnout kompletní zálohu</button>
+          <button onClick={() => exportState(state)}>Stáhnout zálohu</button>
           <button onClick={() => fileRef.current?.click()}>Obnovit zálohu</button>
           <input ref={fileRef} hidden type="file" accept=".json" onChange={importData} />
         </div>
