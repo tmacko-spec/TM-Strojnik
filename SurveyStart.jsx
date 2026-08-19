@@ -146,21 +146,7 @@ export default function SurveyStart() {
         </p>
       </section>
 
-      <div className="survey-actions">
-        <button
-          className="survey-button primary"
-          onClick={() =>
-            navigate(`/survey/measure?length=${length}&width=${width}`)
-          }
-        >
-          <span className="button-icon">⌖</span>
-
-          <span>
-            <strong>Začít vytyčovat</strong>
-            <small>Nejdříve založíme bod A</small>
-          </span>
-        </button>
-      </div>
+      
     </div>
     </>
   )
