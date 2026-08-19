@@ -278,7 +278,19 @@ export default function MachineDetail() {
                         {e.text} · zobrazit detail
                       </summary>
                       <div style={{ marginTop: 10 }}>
-                        <p>{e.text}</p>
+                        <div className="shift-detail">
+                  <p><b>Obsluha:</b> {e.record?.operator || '–'}</p>
+                  <p><b>Zákazník:</b> {e.record?.customer || '–'}</p>
+                  <p><b>Druh práce:</b> {e.record?.work || '–'}</p>
+                  {e.record?.job && <p><b>Zakázka:</b> {e.record.job}</p>}
+                  {e.record?.place && <p><b>Místo / adresa:</b> {e.record.place}</p>}
+                  <p><b>Začátek:</b> {e.record?.startTime || e.record?.startedAt || '–'}</p>
+                  <p><b>Konec:</b> {e.record?.endTime || e.record?.endedAt || '–'}</p>
+                  <p><b>Počáteční MTH / km:</b> {e.record?.startHours || '–'}</p>
+                  <p><b>Konečné MTH / km:</b> {e.record?.endHours || '–'}</p>
+                  {e.record?.defect && <p><b>Závada:</b> {e.record.defect}</p>}
+                  {e.record?.maintenance && <p><b>Údržba:</b> {e.record.maintenance}</p>}
+                </div>
                         <button
                           type="button"
                           className="danger-btn"
