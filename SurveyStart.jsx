@@ -1,153 +1,80 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Survey.css'
 
 export default function SurveyStart() {
   const navigate = useNavigate()
-  const activeProject = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("tm-survey-active-project") || "null")
-    } catch {
-      return null
-    }
-  })()
-  const [length, setLength] = useState(() => String(activeProject?.length ?? 40))
-  const [width, setWidth] = useState(() => String(activeProject?.width ?? 20))
+  const [length, setLength] = useState('')
+  const [width, setWidth] = useState('')
 
-  const diagonal = useMemo(() => {
-    const a = Number(length)
-    const b = Number(width)
-
-    if (!a || !b) return '—'
-
-    return Math.sqrt(a * a + b * b).toFixed(2)
-  }, [length, width])
+  const a = Number(String(length).replace(',', '.')) || 0
+  const b = Number(String(width).replace(',', '.')) || 0
+  const diagonal = a > 0 && b > 0
+    ? Math.sqrt(a * a + b * b)
+    : 0
 
   return (
-    <>
-      <div style={{ padding: "16px 20px 0", maxWidth: 900, margin: "0 auto" }}>
-        <button
-          onClick={() => navigate("/survey/projects")}
-          style={{ padding: "10px 14px", marginBottom: 12 }}
-        >
-          ← Projekty hřišť
-        </button>
-        {activeProject && (
-          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
-            Projekt: {activeProject.name}
-          </div>
-        )}
-      </div>
     <div className="survey-page">
       <header className="survey-header">
-        <div>
-          <button
-            onClick={() => navigate('/survey')}
-            style={{
-              border: 0,
-              background: 'white',
-              borderRadius: 12,
-              padding: '10px 14px',
-              fontSize: 18
-            }}
-          >
-            ←
-          </button>
-
-          <h1>Nové vytyčení</h1>
-        </div>
+        <button type="button" onClick={() => navigate('/')}>
+          ← Zpět
+        </button>
+        <h1>Výpočet úhlopříčky</h1>
       </header>
 
       <section className="survey-hero">
-        <h2>Rozměry hřiště</h2>
-        <p>Zadej vnější rozměry obdélníku.</p>
-
-        <div style={{ display: 'grid', gap: 18, marginTop: 24 }}>
-          <label>
-            <strong>Délka A–B</strong>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <input
-                type="number"
-                inputMode="decimal"
-                value={length}
-                onChange={(e) => {
-              const value = e.target.value
-              setLength(value)
-              if (activeProject) {
-                const updated = { ...activeProject, length: value, width }
-                localStorage.setItem("tm-survey-active-project", JSON.stringify(updated))
-                const projects = JSON.parse(localStorage.getItem("tm-survey-projects") || "[]")
-                localStorage.setItem("tm-survey-projects", JSON.stringify(projects.map((p) => p.id === updated.id ? updated : p)))
-              }
-            }}
-                style={{
-                  width: '100%',
-                  fontSize: 26,
-                  padding: 16,
-                  marginTop: 8,
-                  borderRadius: 14,
-                  border: '1px solid #d0d5dd'
-                }}
-              />
-              <strong>m</strong>
-            </div>
-          </label>
-
-          <label>
-            <strong>Šířka A–D</strong>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <input
-                type="number"
-                inputMode="decimal"
-                value={width}
-                onChange={(e) => {
-              const value = e.target.value
-              setWidth(value)
-              if (activeProject) {
-                const updated = { ...activeProject, length, width: value }
-                localStorage.setItem("tm-survey-active-project", JSON.stringify(updated))
-                const projects = JSON.parse(localStorage.getItem("tm-survey-projects") || "[]")
-                localStorage.setItem("tm-survey-projects", JSON.stringify(projects.map((p) => p.id === updated.id ? updated : p)))
-              }
-            }}
-                style={{
-                  width: '100%',
-                  fontSize: 26,
-                  padding: 16,
-                  marginTop: 8,
-                  borderRadius: 14,
-                  border: '1px solid #d0d5dd'
-                }}
-              />
-              <strong>m</strong>
-            </div>
-          </label>
-        </div>
-      </section>
-
-      <section className="survey-hero" style={{ marginTop: 18 }}>
-        <h2>Kontrolní úhlopříčka</h2>
-
-        <div
-          style={{
-            fontSize: 42,
-            fontWeight: 800,
-            color: '#187c3a',
-            margin: '12px 0'
-          }}
-        >
-          {diagonal} m
-        </div>
-
+        <h2>📐 Kontrola pravoúhlosti</h2>
         <p>
-          U pravoúhlého hřiště musí mít úhlopříčky A–C a B–D stejnou délku.
+          Zadej délku a šířku. Pro správný obdélník musí mít obě
+          úhlopříčky stejnou vypočtenou délku.
         </p>
+
+        <label>
+          Délka
+          <input
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            value={length}
+            onChange={e => setLength(e.target.value)}
+            placeholder="např. 32"
+          />
+        </label>
+
+        <label>
+          Šířka
+          <input
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            value={width}
+            onChange={e => setWidth(e.target.value)}
+            placeholder="např. 18"
+          />
+        </label>
       </section>
 
-      
+      {diagonal > 0 && (
+        <section className="survey-hero" style={{ marginTop: 18 }}>
+          <small>Úhlopříčka</small>
+
+          <div
+            style={{
+              fontSize: 42,
+              fontWeight: 800,
+              margin: '12px 0'
+            }}
+          >
+            {diagonal.toFixed(3)} m
+          </div>
+
+          <p>
+            Úhlopříčky A–C i B–D mají mít tuto stejnou délku.
+          </p>
+        </section>
+      )}
     </div>
-    </>
   )
 }

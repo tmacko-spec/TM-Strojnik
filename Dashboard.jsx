@@ -91,7 +91,7 @@ export default function Dashboard() {
         <Link to="/ocr/receipt"><span>🧾</span><div><b>Načíst účtenku</b><small>Tankování pomocí OCR</small></div></Link>
         <Link to="/shifts"><span>🕒</span><div><b>Historie směn</b><small>Přehled práce obsluh</small></div></Link>
         <Link to="/planner"><span>📅</span><div><b>Servisy a termíny</b><small>STK, revize, pojištění</small></div></Link>
-        <Link to="/survey/projects"><span>📐</span><div><b>Zaměření / vytyčení</b><small>Projekty hřišť, body a vytyčování</small></div></Link>
+        <Link to="/survey/new"><span>📐</span><div><b>Výpočet úhlopříčky</b><small>Kontrola pravoúhlosti hřiště</small></div></Link>
           <Link to="/settings"><span>💾</span><div><b>Záloha a nastavení</b><small>Data a číselníky</small></div></Link>
       </section>
 
