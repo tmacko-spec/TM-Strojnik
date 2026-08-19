@@ -23,6 +23,67 @@ export default function MachineDetail() {
   const activeShift = shifts.find(x => x.status === 'active')
   const openFaults = faults.filter(x => !x.closed)
 
+  const filtersFluids = Array.isArray(m.filtersFluids) ? m.filtersFluids : []
+
+  const addFilterFluid = () => {
+    const item = {
+      id: Date.now().toString(),
+      type: 'Motorový olej',
+      name: '',
+      partNumber: '',
+      quantity: '',
+      note: ''
+    }
+
+    update(prev => ({
+      ...prev,
+      machines: prev.machines.map(machine =>
+        machine.id === m.id
+          ? {
+              ...machine,
+              filtersFluids: [
+                ...(Array.isArray(machine.filtersFluids) ? machine.filtersFluids : []),
+                item
+              ]
+            }
+          : machine
+      )
+    }))
+  }
+
+  const updateFilterFluid = (itemId, field, value) => {
+    update(prev => ({
+      ...prev,
+      machines: prev.machines.map(machine =>
+        machine.id === m.id
+          ? {
+              ...machine,
+              filtersFluids: (Array.isArray(machine.filtersFluids) ? machine.filtersFluids : []).map(item =>
+                item.id === itemId ? { ...item, [field]: value } : item
+              )
+            }
+          : machine
+      )
+    }))
+  }
+
+  const removeFilterFluid = itemId => {
+    if (!window.confirm('Opravdu smazat tuto položku?')) return
+
+    update(prev => ({
+      ...prev,
+      machines: prev.machines.map(machine =>
+        machine.id === m.id
+          ? {
+              ...machine,
+              filtersFluids: (Array.isArray(machine.filtersFluids) ? machine.filtersFluids : []).filter(item => item.id !== itemId)
+            }
+          : machine
+      )
+    }))
+  }
+
+
   const closeFault = fault => {
     update(prev => ({
       ...prev,
@@ -168,7 +229,8 @@ export default function MachineDetail() {
           ['overview','Přehled'],
           ['timeline','Časová osa'],
           ['costs','Náklady'],
-          ['documents','Dokumenty']
+          ['documents','Dokumenty'],
+        ['filters','Filtry a kapaliny']
         ].map(([value,label]) => (
           <button key={value} className={tab===value?'active':''} onClick={()=>setTab(value)}>{label}</button>
         ))}
@@ -370,7 +432,97 @@ export default function MachineDetail() {
         </section>
       )}
 
-      {tab === 'documents' && (
+      
+      {tab === 'filters' && (
+        <section className="card">
+          <h2>🛢️ Filtry a kapaliny</h2>
+          <p><b>{m.brand} {m.model}</b></p>
+
+          {filtersFluids.length === 0 ? (
+            <div className="empty">Zatím nejsou zadané žádné filtry ani kapaliny.</div>
+          ) : (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {filtersFluids.map(item => (
+                <div
+                  key={item.id}
+                  style={{
+                    border: '1px solid #ddd',
+                    borderRadius: 12,
+                    padding: 12
+                  }}
+                >
+                  <label>Typ
+                    <select
+                      value={item.type || ''}
+                      onChange={e => updateFilterFluid(item.id, 'type', e.target.value)}
+                    >
+                      <option>Motorový olej</option>
+                      <option>Hydraulický olej</option>
+                      <option>Převodový olej</option>
+                      <option>Chladicí kapalina</option>
+                      <option>Olejový filtr</option>
+                      <option>Palivový filtr</option>
+                      <option>Vzduchový filtr</option>
+                      <option>Hydraulický filtr</option>
+                      <option>Jiné</option>
+                    </select>
+                  </label>
+
+                  <label>Název / specifikace
+                    <input
+                      value={item.name || ''}
+                      onChange={e => updateFilterFluid(item.id, 'name', e.target.value)}
+                      placeholder="např. 10W-40, HLP 46..."
+                    />
+                  </label>
+
+                  <label>Katalogové číslo
+                    <input
+                      value={item.partNumber || ''}
+                      onChange={e => updateFilterFluid(item.id, 'partNumber', e.target.value)}
+                      placeholder="číslo filtru / dílu"
+                    />
+                  </label>
+
+                  <label>Množství
+                    <input
+                      value={item.quantity || ''}
+                      onChange={e => updateFilterFluid(item.id, 'quantity', e.target.value)}
+                      placeholder="např. 7 l"
+                    />
+                  </label>
+
+                  <label>Poznámka
+                    <input
+                      value={item.note || ''}
+                      onChange={e => updateFilterFluid(item.id, 'note', e.target.value)}
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    className="danger-btn"
+                    onClick={() => removeFilterFluid(item.id)}
+                  >
+                    🗑 Smazat položku
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="primary"
+            onClick={addFilterFluid}
+            style={{ marginTop: 14 }}
+          >
+            + Přidat filtr nebo kapalinu
+          </button>
+        </section>
+      )}
+
+{tab === 'documents' && (
         <section className="documents-grid">
           {[
             ['📄','Technický průkaz'],
